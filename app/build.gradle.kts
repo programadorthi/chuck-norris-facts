@@ -1,5 +1,6 @@
 import configs.AndroidConfig
 import configs.FlavorConfig
+import configs.SigningConfig
 import dependencies.InstrumentationTestsDependencies.Companion.instrumentationTest
 import dependencies.Libraries
 import dependencies.UnitTestDependencies.Companion.unitTest
@@ -10,6 +11,8 @@ plugins {
     id(PluginIds.KTLINT)
 }
 
+base.archivesBaseName = "norris-facts-${Versioning.version.name}"
+
 android {
 
     compileSdkVersion(AndroidConfig.COMPILE_SDK_VERSION)
@@ -18,17 +21,69 @@ android {
     defaultConfig {
         minSdkVersion(AndroidConfig.MIN_SDK_VERSION)
         targetSdkVersion(AndroidConfig.TARGET_SDK_VERSION)
+
         applicationId = AndroidConfig.APPLICATION_ID
+        testInstrumentationRunner = AndroidConfig.INSTRUMENTATION_TEST_RUNNER
         versionCode = Versioning.version.code
         versionName = Versioning.version.name
-        testInstrumentationRunner = AndroidConfig.INSTRUMENTATION_TEST_RUNNER
+
+        vectorDrawables.apply {
+            useSupportLibrary = true
+            generatedDensities(*(AndroidConfig.generatedDensities))
+        }
+
+        resConfigs(*(AndroidConfig.resConfigs))
+    }
+
+    signingConfigs {
+
+        create(FlavorConfig.BuildType.RELEASE) {
+            storeFile = SigningConfig.storeFile(rootProject)
+            storePassword = SigningConfig.STORE_PASSWORD
+            keyAlias = SigningConfig.KEY_ALIAS
+            keyPassword = SigningConfig.KEY_PASSWORD
+        }
+
     }
 
     buildTypes {
+
+        getByName(FlavorConfig.BuildType.DEBUG) {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-DEBUG"
+            isTestCoverageEnabled = true
+        }
+
         getByName(FlavorConfig.BuildType.RELEASE) {
             isMinifyEnabled = true
+            isShrinkResources = true
+
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+            signingConfig = signingConfigs.findByName(FlavorConfig.BuildType.RELEASE)
         }
+    }
+
+    flavorDimensions(*(arrayOf(FlavorConfig.DEFAULT_DIMENSION_NAME)))
+
+    productFlavors {
+
+        create(FlavorConfig.Flavor.DEVELOPMENT) {
+            dimension = FlavorConfig.DEFAULT_DIMENSION_NAME
+
+            buildConfigField("String", "BASE_URL", FlavorConfig.Endpoint.DEVELOPMENT)
+        }
+
+        create(FlavorConfig.Flavor.PRODUCTION) {
+            dimension = FlavorConfig.DEFAULT_DIMENSION_NAME
+
+            buildConfigField("String", "BASE_URL", FlavorConfig.Endpoint.PRODUCTION)
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = AndroidConfig.compileOptionsCompatibility
+        targetCompatibility = AndroidConfig.compileOptionsCompatibility
     }
 }
 
@@ -51,7 +106,7 @@ dependencies {
         forEachDependency { androidTestImplementation(it) }
 
         forEachProjectDependency(this@dependencies) {
-            testImplementation(it)
+            androidTestImplementation(it)
         }
     }
 }
