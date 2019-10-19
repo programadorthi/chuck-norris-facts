@@ -4,13 +4,16 @@ buildscript {
     repositories {
         google()
         jcenter()
-        
+        maven(url = "https://plugins.gradle.org/m2/")
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:3.5.1")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50")
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle.kts files
+        classpath(PluginDependencies.ANDROID_GRADLE)
+        classpath(PluginDependencies.KOTLIN)
+        classpath(PluginDependencies.KOTLIN_SERIALIZATION)
+        classpath(PluginDependencies.KTLINT)
+        classpath(PluginDependencies.DETEKT)
+        classpath(PluginDependencies.JACOCO_UNIFIED)
+        classpath(PluginDependencies.TEST_LOGGER)
     }
 }
 

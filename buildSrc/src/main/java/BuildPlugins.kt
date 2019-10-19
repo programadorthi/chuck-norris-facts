@@ -26,5 +26,6 @@ object PluginIds {
     const val KOTLIN_ANDROID_EXTENSIONS = "kotlin-android-extensions"
     const val KOTLIN_SERIALIZATION = "kotlinx-serialization"
     const val JACOCO_UNIFIED = "com.vanniktech.android.junit.jacoco"
+    const val KTLINT = "org.jlleitschuh.gradle.ktlint"
     const val DETEKT = "io.gitlab.arturbosch.detekt"
 }

@@ -1,23 +1,31 @@
+import configs.AndroidConfig
+import configs.FlavorConfig
+import dependencies.InstrumentationTestsDependencies.Companion.instrumentationTest
+import dependencies.Libraries
+import dependencies.UnitTestDependencies.Companion.unitTest
 
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("kotlin-android-extensions")
+    id(PluginIds.ANDROID_APPLICATION)
+    id(PluginIds.KOTLIN_ANDROD)
+    id(PluginIds.KTLINT)
 }
 
 android {
-    compileSdkVersion(29)
-    buildToolsVersion("29.0.2")
+
+    compileSdkVersion(AndroidConfig.COMPILE_SDK_VERSION)
+    buildToolsVersion(AndroidConfig.BUILD_TOOLS_VERSION)
+
     defaultConfig {
-        minSdkVersion(21)
-        targetSdkVersion(29)
-        applicationId = "br.com.programadorthi.chucknorrisfacts"
-        versionCode = 1
-        versionName = "1.0"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        minSdkVersion(AndroidConfig.MIN_SDK_VERSION)
+        targetSdkVersion(AndroidConfig.TARGET_SDK_VERSION)
+        applicationId = AndroidConfig.APPLICATION_ID
+        versionCode = Versioning.version.code
+        versionName = Versioning.version.name
+        testInstrumentationRunner = AndroidConfig.INSTRUMENTATION_TEST_RUNNER
     }
+
     buildTypes {
-        getByName("release") {
+        getByName(FlavorConfig.BuildType.RELEASE) {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
@@ -25,11 +33,25 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.50")
-    implementation("androidx.appcompat:appcompat:1.0.2")
-    implementation("androidx.core:core-ktx:1.0.2")
-    implementation("androidx.CONSTRAINT_LAYOUT:CONSTRAINT_LAYOUT:1.1.3")
-    testImplementation("junit:junit:4.12")
-    androidTestImplementation("androidx.test.ext:junit:1.1.0")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.1.1")
+    implementation(Libraries.KOTLIN_STDLIB)
+
+    implementation(Libraries.APP_COMPAT)
+    implementation(Libraries.CORE_KTX)
+    implementation(Libraries.CONSTRAINT_LAYOUT)
+
+    unitTest {
+        forEachDependency { testImplementation(it) }
+
+        forEachProjectDependency(this@dependencies) {
+            testImplementation(it)
+        }
+    }
+
+    instrumentationTest {
+        forEachDependency { androidTestImplementation(it) }
+
+        forEachProjectDependency(this@dependencies) {
+            testImplementation(it)
+        }
+    }
 }

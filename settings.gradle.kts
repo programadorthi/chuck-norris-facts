@@ -1,3 +1,5 @@
+import modules.ProjectModules
+
 rootProject.name = "Chuck Norris Facts"
 
-include(":app")
+include(ProjectModules.APP)

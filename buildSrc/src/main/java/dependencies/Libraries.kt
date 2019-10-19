@@ -23,7 +23,7 @@ object Libraries {
     // Android
     const val APP_COMPAT = "androidx.appcompat:appcompat:${Versions.APP_COMPAT}"
     const val CORE_KTX = "androidx.core:core-ktx:${Versions.CORE_KTX}"
-    const val CONSTRAINT_LAYOUT = "androidx.CONSTRAINT_LAYOUT:CONSTRAINT_LAYOUT:${Versions.CONSTRAINT_LAYOUT}"
+    const val CONSTRAINT_LAYOUT = "androidx.constraintlayout:constraintlayout:${Versions.CONSTRAINT_LAYOUT}"
     const val RECYCLER_VIEW = "androidx.recyclerview:recyclerview:${Versions.RECYCLER_VIEW}"
 
     // Material Design
