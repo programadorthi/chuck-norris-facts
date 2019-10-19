@@ -23,9 +23,12 @@ object PluginIds {
     const val ANDROID_LIBRARY = "com.android.library"
     const val KOTLIN = "kotlin"
     const val KOTLIN_ANDROD = "kotlin-android"
-    const val KOTLIN_ANDROID_EXTENSIONS = "kotlin-android-extensions"
     const val KOTLIN_SERIALIZATION = "kotlinx-serialization"
     const val JACOCO_UNIFIED = "com.vanniktech.android.junit.jacoco"
     const val KTLINT = "org.jlleitschuh.gradle.ktlint"
     const val DETEKT = "io.gitlab.arturbosch.detekt"
+
+    // Plugins below are used in .gradle files. Don't remove!!!!
+    const val KOTLIN_ANDROID_EXTENSIONS = "kotlin-android-extensions"
+    const val TEST_LOGGER = "com.adarshr.test-logger"
 }

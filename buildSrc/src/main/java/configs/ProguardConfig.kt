@@ -10,6 +10,10 @@ class ProguardConfig(private val pathToFiles: String) {
 
     companion object {
         const val ANDROID_OPTIMIZE_FILE = "proguard-android-optimize.txt"
+        // DON'T SAFE DELETE CONSTs BELOW
+        // They are used in the .gradle files.
+        const val CONSUMER_RULES = "consumer-rules.pro"
+        const val PROGUARD_RULES = "proguard-rules.pro"
     }
 
 }

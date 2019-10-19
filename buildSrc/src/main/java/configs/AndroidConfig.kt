@@ -1,6 +1,7 @@
 package configs
 
 import org.gradle.api.JavaVersion
+import java.util.Arrays
 
 object AndroidConfig {
     const val APPLICATION_ID = "br.com.programadorthi.chucknorrisfacts"
@@ -18,4 +19,8 @@ object AndroidConfig {
     val generatedDensities = emptyArray<String>()
 
     val resConfigs = arrayOf("en")
+
+    // Configs below are used in .gradle files. Don't remove!!!!
+    val generatedDensitiesGroovy = Arrays.asList(*generatedDensities)
+    val resConfigsGroovy = Arrays.asList(*resConfigs)
 }
