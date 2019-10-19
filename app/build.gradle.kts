@@ -1,5 +1,6 @@
 import configs.AndroidConfig
 import configs.FlavorConfig
+import configs.ProguardConfig
 import configs.SigningConfig
 import dependencies.InstrumentationTestsDependencies.Companion.instrumentationTest
 import dependencies.Libraries
@@ -58,7 +59,9 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
 
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            val proguardConfig = ProguardConfig("$rootDir/proguard")
+            proguardFiles(*(proguardConfig.customRules))
+            proguardFiles(getDefaultProguardFile(ProguardConfig.ANDROID_OPTIMIZE_FILE))
 
             signingConfig = signingConfigs.findByName(FlavorConfig.BuildType.RELEASE)
         }
