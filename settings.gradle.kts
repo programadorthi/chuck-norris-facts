@@ -4,5 +4,6 @@ rootProject.name = "Chuck Norris Facts"
 
 include(
     ProjectModules.APP,
-    ProjectModules.Shared.DOMAIN
+    ProjectModules.Shared.DOMAIN,
+    ProjectModules.Shared.NETWORK
 )

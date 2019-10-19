@@ -6,6 +6,7 @@ object ProjectModules {
 
     object Shared {
         const val DOMAIN = ":shared-domain"
+        const val NETWORK = ":shared-network"
     }
 
 }
