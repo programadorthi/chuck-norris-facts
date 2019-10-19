@@ -2,4 +2,7 @@ import modules.ProjectModules
 
 rootProject.name = "Chuck Norris Facts"
 
-include(ProjectModules.APP)
+include(
+    ProjectModules.APP,
+    ProjectModules.Shared.DOMAIN
+)
