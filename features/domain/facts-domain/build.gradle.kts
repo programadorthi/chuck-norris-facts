@@ -1,4 +1,5 @@
 import dependencies.Libraries
+import dependencies.UnitTestDependencies.Companion.unitTest
 import modules.LibraryModule
 import modules.LibraryType
 
@@ -14,4 +15,12 @@ dependencies {
     implementation(Libraries.KOTLIN_STDLIB)
 
     implementation(Libraries.RX_JAVA)
+
+    unitTest {
+        forEachDependency { testImplementation(it) }
+
+        forEachProjectDependency(this@dependencies) {
+            testImplementation(it)
+        }
+    }
 }

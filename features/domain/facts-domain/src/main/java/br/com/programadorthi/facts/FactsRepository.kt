@@ -4,7 +4,7 @@ import io.reactivex.Single
 
 interface FactsRepository {
 
-    fun fetchCategories(): Single<List<String>>
+    fun fetchCategories(offset: Int): Single<List<String>>
 
     fun doSearch(text: String): Single<List<Fact>>
 }
