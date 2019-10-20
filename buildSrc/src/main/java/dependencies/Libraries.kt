@@ -11,7 +11,7 @@ object Libraries {
     const val KOTLIN_SERIALIZATION = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Versions.KOTLIN_SERIALIZATION}"
 
     // RxJava
-    const val RX_JAVA = "io.reactivex.rxjava2:rxjava2:${Versions.RX_JAVA}"
+    const val RX_JAVA = "io.reactivex.rxjava2:rxjava:${Versions.RX_JAVA}"
 
     // OKHttp and Retrofit
     const val OKHTTP = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP}"
