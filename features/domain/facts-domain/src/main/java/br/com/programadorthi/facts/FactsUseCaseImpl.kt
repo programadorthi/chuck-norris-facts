@@ -12,6 +12,8 @@ class FactsUseCaseImpl(private val factsRepository: FactsRepository) : FactsUseC
         return factsRepository.fetchCategories(offset)
     }
 
+    override fun lastSearches(): Single<List<String>> = factsRepository.getLastSearches()
+
     override fun search(text: String): Single<List<Fact>> {
         return when {
             text.isBlank() -> Single.error(FactsBusiness.EmptySearch)

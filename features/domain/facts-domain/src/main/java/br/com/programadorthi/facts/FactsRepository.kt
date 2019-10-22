@@ -6,5 +6,7 @@ interface FactsRepository {
 
     fun fetchCategories(offset: Int): Single<List<String>>
 
+    fun getLastSearches(): Single<List<String>>
+
     fun doSearch(text: String): Single<List<Fact>>
 }

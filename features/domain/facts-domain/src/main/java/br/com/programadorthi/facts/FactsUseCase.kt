@@ -6,5 +6,7 @@ interface FactsUseCase {
 
     fun categories(offset: Int): Single<List<String>>
 
+    fun lastSearches(): Single<List<String>>
+
     fun search(text: String): Single<List<Fact>>
 }
