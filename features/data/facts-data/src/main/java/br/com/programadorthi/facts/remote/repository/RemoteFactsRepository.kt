@@ -1,4 +1,4 @@
-package br.com.programadorthi.facts.remote
+package br.com.programadorthi.facts.remote.repository
 
 import br.com.programadorthi.facts.Fact
 import io.reactivex.Single

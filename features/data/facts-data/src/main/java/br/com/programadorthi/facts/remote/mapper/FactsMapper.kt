@@ -1,6 +1,8 @@
-package br.com.programadorthi.facts.remote
+package br.com.programadorthi.facts.remote.mapper
 
 import br.com.programadorthi.facts.Fact
+import br.com.programadorthi.facts.remote.raw.FactRaw
+import br.com.programadorthi.facts.remote.raw.FactsResponseRaw
 import br.com.programadorthi.network.mapper.RemoteMapper
 
 class FactsMapper : RemoteMapper<FactsResponseRaw, List<Fact>>() {

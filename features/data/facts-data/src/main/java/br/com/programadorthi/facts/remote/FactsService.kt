@@ -1,5 +1,6 @@
 package br.com.programadorthi.facts.remote
 
+import br.com.programadorthi.facts.remote.raw.FactsResponseRaw
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query

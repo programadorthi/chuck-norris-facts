@@ -1,7 +1,7 @@
 package br.com.programadorthi.facts
 
 import br.com.programadorthi.facts.local.LocalFactsRepository
-import br.com.programadorthi.facts.remote.RemoteFactsRepository
+import br.com.programadorthi.facts.remote.repository.RemoteFactsRepository
 import io.reactivex.Single
 
 class FactsRepositoryImpl(

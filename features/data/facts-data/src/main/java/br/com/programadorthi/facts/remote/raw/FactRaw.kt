@@ -1,4 +1,4 @@
-package br.com.programadorthi.facts.remote
+package br.com.programadorthi.facts.remote.raw
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

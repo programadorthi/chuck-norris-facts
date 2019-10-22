@@ -1,6 +1,8 @@
-package br.com.programadorthi.facts.remote
+package br.com.programadorthi.facts.remote.repository
 
 import br.com.programadorthi.facts.Fact
+import br.com.programadorthi.facts.remote.FactsService
+import br.com.programadorthi.facts.remote.raw.FactsResponseRaw
 import br.com.programadorthi.network.manager.NetworkManager
 import br.com.programadorthi.network.mapper.RemoteMapper
 import io.reactivex.Single
