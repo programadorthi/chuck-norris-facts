@@ -1,8 +1,9 @@
-package br.com.programadorthi.facts
+package br.com.programadorthi.facts.facts
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import br.com.programadorthi.facts.FactsUseCase
 import br.com.programadorthi.facts.model.FactViewData
 import io.reactivex.disposables.CompositeDisposable
 
