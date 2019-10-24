@@ -73,16 +73,14 @@ class FactsActivity : AppCompatActivity() {
 
     private fun startSearch() {
         val intent = Intent(this, SearchFactsActivity::class.java)
-        startActivityForResult(intent,
-            SEARCH_FACT_REQUEST_CODE
-        )
+        startActivityForResult(intent, SEARCH_FACT_REQUEST_CODE)
     }
 
-    private companion object {
+    companion object {
         private const val EMPTY_TEXT = ""
-        private const val SEARCH_FACT_REQUEST_CODE = 999
         private const val SHARE_FACT_CONTENT_TYPE = "text/plain"
 
+        const val SEARCH_FACT_REQUEST_CODE = 999
         const val SEARCH_RESULT_EXTRA_KEY = "search_result"
     }
 }
