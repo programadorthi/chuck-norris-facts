@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">Facts</string>
+    <string name="app_name">Chuck Norris Facts</string>
+
+    <string name="menu_search_title">Search</string>
+
+    <string name="item_fact_share_image_content_description">Share</string>
+    <string name="item_fact_view_holder_uncategorized_label">Uncategorized</string>
 </resources>

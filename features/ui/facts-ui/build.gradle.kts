@@ -19,6 +19,12 @@ dependencies {
 
     implementation(Libraries.KOTLIN_STDLIB)
 
+    implementation(Libraries.APP_COMPAT)
+    implementation(Libraries.CONSTRAINT_LAYOUT)
+    implementation(Libraries.RECYCLER_VIEW)
+
+    implementation(Libraries.MATERIAL_DESIGN)
+
     unitTest {
         forEachDependency { testImplementation(it) }
 
