@@ -14,6 +14,11 @@ object ProjectModules {
             private const val DOMAIN_PREFIX = ":features:domain"
             const val FACTS = "${DOMAIN_PREFIX}:facts-domain"
         }
+
+        object Ui {
+            private const val UI_PREFIX = ":features:ui"
+            const val FACTS = "${UI_PREFIX}:facts-ui"
+        }
     }
 
     object Shared {
