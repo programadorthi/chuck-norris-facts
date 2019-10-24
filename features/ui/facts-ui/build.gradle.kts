@@ -23,6 +23,9 @@ dependencies {
     implementation(Libraries.CONSTRAINT_LAYOUT)
     implementation(Libraries.RECYCLER_VIEW)
 
+    implementation(Libraries.LIVEDATA)
+    implementation(Libraries.VIEWMODEL)
+
     implementation(Libraries.MATERIAL_DESIGN)
 
     unitTest {

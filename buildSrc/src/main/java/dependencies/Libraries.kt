@@ -26,6 +26,10 @@ object Libraries {
     const val CONSTRAINT_LAYOUT = "androidx.constraintlayout:constraintlayout:${Versions.CONSTRAINT_LAYOUT}"
     const val RECYCLER_VIEW = "androidx.recyclerview:recyclerview:${Versions.RECYCLER_VIEW}"
 
+    // Lifecycle
+    const val LIVEDATA = "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.LIFECYCLE}"
+    const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.LIFECYCLE}"
+
     // Material Design
     const val MATERIAL_DESIGN = "com.google.android.material:material:${Versions.MATERIAL_DESIGN}"
 
@@ -57,6 +61,8 @@ object Libraries {
         const val CORE_KTX = "1.1.0"
         const val CONSTRAINT_LAYOUT = "1.1.3"
         const val RECYCLER_VIEW = "1.0.0"
+
+        const val LIFECYCLE = "2.1.0"
 
         const val MATERIAL_DESIGN = "1.0.0"
 

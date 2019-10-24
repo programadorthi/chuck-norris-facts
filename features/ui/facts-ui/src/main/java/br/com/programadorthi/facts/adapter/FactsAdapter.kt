@@ -31,4 +31,10 @@ class FactsAdapter(
         val item = dataSet[position]
         holder.bind(item)
     }
+
+    fun changeData(facts: List<FactViewData>) {
+        dataSet.clear()
+        dataSet.addAll(facts)
+        notifyDataSetChanged()
+    }
 }
