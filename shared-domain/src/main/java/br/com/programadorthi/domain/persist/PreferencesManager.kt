@@ -1,7 +1,7 @@
 package br.com.programadorthi.domain.persist
 
 interface PreferencesManager {
-    fun <T> getItems(key: String): Set<T>
+    fun getItems(key: String): Set<String>
 
-    fun <T> putItems(key: String, items: Set<T>)
+    fun putItems(key: String, items: Set<String>)
 }

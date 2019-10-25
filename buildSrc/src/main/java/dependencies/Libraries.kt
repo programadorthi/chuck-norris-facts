@@ -17,13 +17,14 @@ object Libraries {
     const val OKHTTP = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP}"
     const val OKHTTP_LOGGER = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
     const val RETROFIT = "com.squareup.retrofit2:retrofit:${Versions.RETROFIT}"
-    const val RETROFIT_RX_JAVA_ADAPTER = "com.squareup.retrofit2:adapter-rxjava:${Versions.RETROFIT_RX_JAVA_ADAPTER}"
+    const val RETROFIT_RX_JAVA_ADAPTER = "com.squareup.retrofit2:adapter-rxjava2:${Versions.RETROFIT_RX_JAVA_ADAPTER}"
     const val RETROFIT_KOTLIN_SERIALIZATION_CONVERTER = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.RETROFIT_KOTLIN_SERIALIZATION_CONVERTER}"
 
     // Android
     const val APP_COMPAT = "androidx.appcompat:appcompat:${Versions.APP_COMPAT}"
     const val CORE_KTX = "androidx.core:core-ktx:${Versions.CORE_KTX}"
     const val CONSTRAINT_LAYOUT = "androidx.constraintlayout:constraintlayout:${Versions.CONSTRAINT_LAYOUT}"
+    const val PREFERENCE = "androidx.preference:preference-ktx:${Versions.PREFERENCE}"
     const val RECYCLER_VIEW = "androidx.recyclerview:recyclerview:${Versions.RECYCLER_VIEW}"
 
     // Lifecycle
@@ -33,8 +34,14 @@ object Libraries {
     // Material Design
     const val MATERIAL_DESIGN = "com.google.android.material:material:${Versions.MATERIAL_DESIGN}"
 
+    // Dependency Injection
+    const val KOIN_ANDROID = "org.koin:koin-android:${Versions.KOIN}"
+    const val KOIN_SCOPE = "org.koin:koin-androidx-scope:${Versions.KOIN}"
+    const val KOIN_VIEWMODEL = "org.koin:koin-androidx-viewmodel:${Versions.KOIN}"
+
     // Logger
     const val LOGGER = "com.orhanobut:logger:${Versions.LOGGER}"
+    const val TIMBER = "com.jakewharton.timber:timber:${Versions.TIMBER}"
 
     // Unit test
     const val JUNIT = "junit:junit:${Versions.JUNIT}"
@@ -60,13 +67,17 @@ object Libraries {
         const val APP_COMPAT = "1.1.0"
         const val CORE_KTX = "1.1.0"
         const val CONSTRAINT_LAYOUT = "1.1.3"
+        const val PREFERENCE = "1.1.0"
         const val RECYCLER_VIEW = "1.0.0"
 
         const val LIFECYCLE = "2.1.0"
 
         const val MATERIAL_DESIGN = "1.0.0"
 
+        const val KOIN = "2.0.1"
+
         const val LOGGER = "2.2.0"
+        const val TIMBER = "4.7.1"
 
         const val JUNIT = "4.12"
         const val ASSERTJ = "3.11.1"

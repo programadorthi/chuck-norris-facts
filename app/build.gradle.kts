@@ -5,6 +5,7 @@ import configs.SigningConfig
 import dependencies.InstrumentationTestsDependencies.Companion.instrumentationTest
 import dependencies.Libraries
 import dependencies.UnitTestDependencies.Companion.unitTest
+import modules.ProjectModules
 
 plugins {
     id(PluginIds.ANDROID_APPLICATION)
@@ -91,11 +92,24 @@ android {
 }
 
 dependencies {
+    implementation(project(ProjectModules.Shared.DOMAIN))
+    implementation(project(ProjectModules.Shared.NETWORK))
+
     implementation(Libraries.KOTLIN_STDLIB)
 
     implementation(Libraries.APP_COMPAT)
     implementation(Libraries.CORE_KTX)
     implementation(Libraries.CONSTRAINT_LAYOUT)
+    implementation(Libraries.PREFERENCE)
+
+    implementation(Libraries.KOIN_ANDROID)
+
+    implementation(Libraries.OKHTTP)
+    implementation(Libraries.OKHTTP_LOGGER)
+    implementation(Libraries.RETROFIT)
+
+    implementation(Libraries.LOGGER)
+    implementation(Libraries.TIMBER)
 
     unitTest {
         forEachDependency { testImplementation(it) }

@@ -9,7 +9,7 @@ class LocalFactsRepositoryImpl(
 ) : LocalFactsRepository {
 
     override fun getCategories(): Single<List<String>> {
-        return Single.just(preferencesManager.getItems<String>(CATEGORIES_KEY).toList())
+        return Single.just(preferencesManager.getItems(CATEGORIES_KEY).toList())
     }
 
     override fun getLastSearches(): Single<List<String>> {
@@ -32,7 +32,7 @@ class LocalFactsRepositoryImpl(
         }
     }
 
-    private fun getLastSearchesSet() = preferencesManager.getItems<String>(LAST_SEARCHES_KEY)
+    private fun getLastSearchesSet() = preferencesManager.getItems(LAST_SEARCHES_KEY)
 
     private companion object {
         private const val CATEGORIES_KEY = "categories"
