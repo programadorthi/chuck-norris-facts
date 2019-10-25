@@ -3,6 +3,7 @@ package br.com.programadorthi.facts.search
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -12,8 +13,10 @@ import br.com.programadorthi.facts.facts.FactsActivity
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.activity_search_facts.searchFactsCategoriesChipGroup
+import kotlinx.android.synthetic.main.activity_search_facts.searchFactsCategoriesTitleTextView
 import kotlinx.android.synthetic.main.activity_search_facts.searchFactsEditText
 import kotlinx.android.synthetic.main.activity_search_facts.searchFactsLastSearchesChipGroup
+import kotlinx.android.synthetic.main.activity_search_facts.searchFactsLastSearchesTitleTextView
 import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -26,15 +29,11 @@ class SearchFactsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search_facts)
 
         searchFactsViewModel.categories.observe(this, Observer { result ->
-            when (result) {
-                is Result.Success -> loadChips(result.data, searchFactsCategoriesChipGroup)
-                is Result.Error -> loadChips(emptyList(), searchFactsCategoriesChipGroup)
-                // TODO: Implement loading
-            }
+            handleCategoriesResult(result)
         })
 
         searchFactsViewModel.lastSearches.observe(this, Observer { lastSearches ->
-            loadChips(lastSearches, searchFactsLastSearchesChipGroup)
+            handleLastSearches(lastSearches)
         })
 
         setupSearchEditText()
@@ -43,6 +42,28 @@ class SearchFactsActivity : AppCompatActivity() {
             fetchCategories()
             fetchLastSearches()
         }
+    }
+
+    private fun handleCategoriesResult(result: Result<List<String>>?) {
+        when (result) {
+            is Result.Success -> {
+                searchFactsCategoriesTitleTextView.visibility = View.VISIBLE
+                loadChips(result.data, searchFactsCategoriesChipGroup)
+            }
+            is Result.Error -> {
+                searchFactsCategoriesTitleTextView.visibility = View.INVISIBLE
+                loadChips(emptyList(), searchFactsCategoriesChipGroup)
+            }
+        }
+    }
+
+    private fun handleLastSearches(lastSearches: List<String>) {
+        searchFactsLastSearchesTitleTextView.visibility = if (lastSearches.isEmpty()) {
+            View.INVISIBLE
+        } else {
+            View.VISIBLE
+        }
+        loadChips(lastSearches, searchFactsLastSearchesChipGroup)
     }
 
     private fun loadChips(items: List<String>, view: ChipGroup) {

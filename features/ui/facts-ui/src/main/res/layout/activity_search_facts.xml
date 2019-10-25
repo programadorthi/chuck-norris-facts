@@ -40,6 +40,7 @@
             android:layout_marginBottom="16dp"
             android:text="@string/activity_search_facts_categories_title"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/searchFactsTextInputLayout" />
@@ -60,6 +61,7 @@
             android:layout_marginBottom="16dp"
             android:text="@string/activity_search_facts_last_searches_title"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/searchFactsCategoriesChipGroup" />

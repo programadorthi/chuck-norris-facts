@@ -14,6 +14,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(ProjectModules.Shared.DOMAIN))
     implementation(project(ProjectModules.Feature.Data.FACTS))
     implementation(project(ProjectModules.Feature.Domain.FACTS))
 
@@ -27,6 +28,8 @@ dependencies {
     implementation(Libraries.VIEWMODEL)
 
     implementation(Libraries.MATERIAL_DESIGN)
+
+    implementation(Libraries.RX_JAVA)
 
     implementation(Libraries.KOIN_SCOPE)
     implementation(Libraries.KOIN_VIEWMODEL)

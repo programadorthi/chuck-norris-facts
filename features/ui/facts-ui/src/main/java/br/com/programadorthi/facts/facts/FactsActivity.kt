@@ -5,12 +5,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import br.com.programadorthi.domain.Result
+import br.com.programadorthi.facts.FactsBusiness
 import br.com.programadorthi.facts.R
 import br.com.programadorthi.facts.adapter.FactsAdapter
 import br.com.programadorthi.facts.model.FactViewData
 import br.com.programadorthi.facts.search.SearchFactsActivity
+import kotlinx.android.synthetic.main.activity_facts.factsProgressBar
+import kotlinx.android.synthetic.main.activity_facts.factsRecyclerView
 import org.koin.androidx.scope.currentScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -24,7 +30,9 @@ class FactsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_facts)
 
-        factsViewModel.facts.observe(this, Observer { facts -> handleFacts(facts) })
+        factsViewModel.facts.observe(this, Observer { result -> handleFacts(result) })
+
+        factsRecyclerView.adapter = factsAdapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -49,9 +57,25 @@ class FactsActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleFacts(facts: List<FactViewData>) {
-        // TODO: Catch Results instead of list
-        factsAdapter.changeData(facts)
+    private fun handleFacts(result: Result<List<FactViewData>>) {
+        when (result) {
+            is Result.Success -> factsAdapter.changeData(result.data)
+            is Result.Error -> handleSearchError(result.cause)
+        }
+
+        factsProgressBar.visibility = if (result is Result.Loading) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+    }
+
+    private fun handleSearchError(cause: Throwable) {
+        val messageId = when (cause) {
+            is FactsBusiness.EmptySearch -> R.string.activity_facts_empty_search_term
+            else -> R.string.activity_facts_something_wrong
+        }
+        Toast.makeText(this, messageId, Toast.LENGTH_LONG).show()
     }
 
     private fun handleQuery(query: String) {
