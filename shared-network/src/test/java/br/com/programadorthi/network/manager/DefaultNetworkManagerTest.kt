@@ -64,7 +64,6 @@ class DefaultNetworkManagerTest {
             .assertNoErrors()
             .assertComplete()
             .assertValue(Integer.MAX_VALUE)
-
     }
 
     @Test
@@ -96,7 +95,6 @@ class DefaultNetworkManagerTest {
             .assertNoValues()
             .assertError { it is NetworkingError.NoInternetConnection }
             .assertOf { assertThat(crashReportFake.reported).isNull() }
-
     }
 
     @Test
@@ -110,7 +108,6 @@ class DefaultNetworkManagerTest {
             .assertNoValues()
             .assertError { it is NetworkingError.EssentialParamMissing }
             .assertOf { assertThat(crashReportFake.reported).isNotNull() }
-
     }
 
     @Test
@@ -150,7 +147,6 @@ class DefaultNetworkManagerTest {
             .assertNoValues()
             .assertError { it is NetworkingError.InvalidDataFormat }
             .assertOf { assertThat(crashReportFake.reported).isEqualTo(singleMappedError) }
-
     }
 
     @Test
@@ -184,7 +180,6 @@ class DefaultNetworkManagerTest {
             .assertNoValues()
             .assertError { it is NetworkingError.ConnectionTimeout }
             .assertOf { assertThat(crashReportFake.reported).isNull() }
-
     }
 
     @Test
@@ -224,7 +219,6 @@ class DefaultNetworkManagerTest {
             .assertNoValues()
             .assertError { it is NetworkingError.UnknownEndpoint }
             .assertOf { assertThat(crashReportFake.reported).isEqualTo(singleMappedError) }
-
     }
 
     @Test
@@ -264,6 +258,5 @@ class DefaultNetworkManagerTest {
             .assertNoValues()
             .assertError { it is NetworkingError.UnknownNetworkException }
             .assertOf { assertThat(crashReportFake.reported).isEqualTo(singleMappedError) }
-
     }
 }

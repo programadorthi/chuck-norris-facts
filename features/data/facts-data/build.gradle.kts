@@ -25,6 +25,8 @@ dependencies {
 
     implementation(Libraries.RETROFIT)
 
+    implementation(Libraries.KOIN_CORE)
+
     unitTest {
         forEachDependency { testImplementation(it) }
 

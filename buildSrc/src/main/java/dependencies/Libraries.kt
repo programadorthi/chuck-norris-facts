@@ -35,6 +35,7 @@ object Libraries {
     const val MATERIAL_DESIGN = "com.google.android.material:material:${Versions.MATERIAL_DESIGN}"
 
     // Dependency Injection
+    const val KOIN_CORE = "org.koin:koin-core:${Versions.KOIN}"
     const val KOIN_ANDROID = "org.koin:koin-android:${Versions.KOIN}"
     const val KOIN_SCOPE = "org.koin:koin-androidx-scope:${Versions.KOIN}"
     const val KOIN_VIEWMODEL = "org.koin:koin-androidx-viewmodel:${Versions.KOIN}"

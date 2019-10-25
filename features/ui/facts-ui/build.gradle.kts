@@ -28,6 +28,9 @@ dependencies {
 
     implementation(Libraries.MATERIAL_DESIGN)
 
+    implementation(Libraries.KOIN_SCOPE)
+    implementation(Libraries.KOIN_VIEWMODEL)
+
     unitTest {
         forEachDependency { testImplementation(it) }
 

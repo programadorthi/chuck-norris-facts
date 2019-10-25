@@ -94,6 +94,9 @@ android {
 dependencies {
     implementation(project(ProjectModules.Shared.DOMAIN))
     implementation(project(ProjectModules.Shared.NETWORK))
+    implementation(project(ProjectModules.Feature.Data.FACTS))
+    implementation(project(ProjectModules.Feature.Domain.FACTS))
+    implementation(project(ProjectModules.Feature.Ui.FACTS))
 
     implementation(Libraries.KOTLIN_STDLIB)
 

@@ -19,6 +19,8 @@ dependencies {
 
     implementation(Libraries.RX_JAVA)
 
+    implementation(Libraries.KOIN_CORE)
+
     unitTest {
         forEachDependency { testImplementation(it) }
 
