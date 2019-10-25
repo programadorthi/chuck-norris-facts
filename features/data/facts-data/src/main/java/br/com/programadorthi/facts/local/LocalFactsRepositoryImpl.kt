@@ -1,7 +1,6 @@
 package br.com.programadorthi.facts.local
 
 import br.com.programadorthi.domain.persist.PreferencesManager
-import io.reactivex.Completable
 import io.reactivex.Single
 
 class LocalFactsRepositoryImpl(
@@ -16,20 +15,13 @@ class LocalFactsRepositoryImpl(
         return Single.just(getLastSearchesSet().toList())
     }
 
-    override fun saveCategories(categories: List<String>): Completable {
-        return Completable.fromAction {
-            preferencesManager.putItems(CATEGORIES_KEY, categories.toSet())
-        }
+    override fun saveCategories(categories: List<String>) {
+        preferencesManager.putItems(CATEGORIES_KEY, categories.toSet())
     }
 
-    override fun saveNewSearch(text: String): Completable {
-        return Completable.fromAction {
-            val lastSearches = getLastSearchesSet()
-            if (lastSearches.contains(text)) {
-                return@fromAction
-            }
-            preferencesManager.putItems(LAST_SEARCHES_KEY, lastSearches + text)
-        }
+    override fun saveNewSearch(text: String) {
+        val lastSearches = getLastSearchesSet()
+        preferencesManager.putItems(LAST_SEARCHES_KEY, lastSearches + text)
     }
 
     private fun getLastSearchesSet() = preferencesManager.getItems(LAST_SEARCHES_KEY)

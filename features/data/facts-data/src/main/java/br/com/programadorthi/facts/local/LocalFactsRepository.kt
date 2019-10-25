@@ -1,6 +1,5 @@
 package br.com.programadorthi.facts.local
 
-import io.reactivex.Completable
 import io.reactivex.Single
 
 interface LocalFactsRepository {
@@ -9,7 +8,7 @@ interface LocalFactsRepository {
 
     fun getLastSearches(): Single<List<String>>
 
-    fun saveCategories(categories: List<String>): Completable
+    fun saveCategories(categories: List<String>)
 
-    fun saveNewSearch(text: String): Completable
+    fun saveNewSearch(text: String)
 }

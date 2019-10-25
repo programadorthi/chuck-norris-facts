@@ -20,7 +20,7 @@ class FactsViewHolder(override val containerView: View) : RecyclerView.ViewHolde
 
     private fun setupFactContent(fact: FactViewData) {
         val factStyle = if (fact.applySmallFont()) {
-            materialR.style.TextAppearance_MaterialComponents_Subtitle2
+            materialR.style.TextAppearance_MaterialComponents_Subtitle1
         } else {
             materialR.style.TextAppearance_MaterialComponents_Headline4
         }

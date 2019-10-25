@@ -1,5 +1,6 @@
 package br.com.programadorthi.facts.search
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -74,11 +75,11 @@ class SearchFactsActivity : AppCompatActivity() {
 
             val inflater = LayoutInflater.from(context)
 
-            for (value in items) {
-                val chip = inflater.inflate(R.layout.item_search_fact_category, view)
+            for (category in items) {
+                val chip = inflater.inflate(R.layout.item_search_fact_category, null)
                 if (chip is Chip) {
-                    chip.text = value
-                    chip.setOnClickListener { goToFactsList(value) }
+                    chip.text = category
+                    chip.setOnClickListener { goToFactsList(category) }
                     addView(chip)
                 }
             }
@@ -101,7 +102,7 @@ class SearchFactsActivity : AppCompatActivity() {
         val intent = Intent().apply {
             putExtra(FactsActivity.SEARCH_RESULT_EXTRA_KEY, query)
         }
-        setResult(FactsActivity.SEARCH_FACT_REQUEST_CODE, intent)
+        setResult(Activity.RESULT_OK, intent)
         finish()
     }
 }
