@@ -3,6 +3,7 @@ package br.com.programadorthi.facts.search
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import br.com.programadorthi.domain.Result
 import br.com.programadorthi.facts.FactsUseCase
 import io.reactivex.disposables.CompositeDisposable
 
@@ -10,8 +11,8 @@ class SearchFactsViewModel(
     private val factsUseCase: FactsUseCase
 ) : ViewModel() {
 
-    private val mutableCategories = MutableLiveData<List<String>>()
-    val categories: LiveData<List<String>>
+    private val mutableCategories = MutableLiveData<Result<List<String>>>()
+    val categories: LiveData<Result<List<String>>>
         get() = mutableCategories
 
     private val mutableLastSearches = MutableLiveData<List<String>>()
@@ -21,35 +22,23 @@ class SearchFactsViewModel(
     private val compositeDisposable = CompositeDisposable()
 
     override fun onCleared() {
-        compositeDisposable.clear()
+        compositeDisposable.dispose()
         super.onCleared()
     }
 
     fun fetchCategories() {
-        // TODO: Remove offset and apply shuffled list
-        val disposable = factsUseCase.categories(MAX_VISIBLE_CATEGORIES)
-            .toObservable()
-            .flatMapIterable { items -> items }
-            .take(MAX_VISIBLE_CATEGORIES.toLong())
-            .toList()
-            .subscribe({ data ->
-                mutableCategories.postValue(data)
-            }, { err ->
-                // TODO: catch errors
-            })
+        val disposable = factsUseCase
+            .categories(offset = MAX_VISIBLE_CATEGORIES, shuffle = true)
+            .map<Result<List<String>>> { cats -> Result.Success(cats) }
+            .onErrorReturn { err -> Result.Error(err) }
+            .subscribe(mutableCategories::postValue)
         compositeDisposable.add(disposable)
     }
 
     fun fetchLastSearches() {
-        val disposable = factsUseCase.lastSearches()
-            .toObservable()
-            .flatMapIterable { items -> items }
-            .toList()
-            .subscribe({ data ->
-                mutableLastSearches.postValue(data)
-            }, { err ->
-                // TODO: catch errors
-            })
+        val disposable = factsUseCase
+            .lastSearches()
+            .subscribe(mutableLastSearches::postValue)
         compositeDisposable.add(disposable)
     }
 

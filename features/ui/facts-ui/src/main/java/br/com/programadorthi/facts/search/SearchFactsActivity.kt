@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import br.com.programadorthi.domain.Result
 import br.com.programadorthi.facts.R
 import br.com.programadorthi.facts.facts.FactsActivity
 import com.google.android.material.chip.Chip
@@ -23,8 +24,12 @@ class SearchFactsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_facts)
 
-        searchFactsViewModel.categories.observe(this, Observer { categories ->
-            loadChips(categories, searchFactsCategoriesChipGroup)
+        searchFactsViewModel.categories.observe(this, Observer { result ->
+            when (result) {
+                is Result.Success -> loadChips(result.data, searchFactsCategoriesChipGroup)
+                is Result.Error -> loadChips(emptyList(), searchFactsCategoriesChipGroup)
+                // TODO: Implement loading
+            }
         })
 
         searchFactsViewModel.lastSearches.observe(this, Observer { lastSearches ->
