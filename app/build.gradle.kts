@@ -45,7 +45,6 @@ android {
             keyAlias = SigningConfig.KEY_ALIAS
             keyPassword = SigningConfig.KEY_PASSWORD
         }
-
     }
 
     buildTypes {

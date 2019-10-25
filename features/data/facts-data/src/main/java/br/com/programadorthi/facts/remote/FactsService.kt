@@ -12,5 +12,4 @@ interface FactsService {
 
     @GET("search")
     fun search(@Query("query") query: String): Single<FactsResponseRaw>
-
 }

@@ -7,7 +7,6 @@ import br.com.programadorthi.chucknorrisfacts.preferences.PreferencesManagerImpl
 import br.com.programadorthi.chucknorrisfacts.report.CrashReportImpl
 import br.com.programadorthi.domain.persist.PreferencesManager
 import br.com.programadorthi.domain.report.CrashReport
-import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
 import org.koin.dsl.module
 

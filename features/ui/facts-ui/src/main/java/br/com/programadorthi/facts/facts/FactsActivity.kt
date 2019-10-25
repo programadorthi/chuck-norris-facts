@@ -11,11 +11,12 @@ import br.com.programadorthi.facts.R
 import br.com.programadorthi.facts.adapter.FactsAdapter
 import br.com.programadorthi.facts.model.FactViewData
 import br.com.programadorthi.facts.search.SearchFactsActivity
+import org.koin.androidx.scope.currentScope
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FactsActivity : AppCompatActivity() {
 
-    // TODO: Remove lateinit because that is not used
-    private lateinit var factsViewModel: FactsViewModel
+    private val factsViewModel: FactsViewModel by currentScope.viewModel(this)
 
     private val factsAdapter = FactsAdapter(::shareFact)
 

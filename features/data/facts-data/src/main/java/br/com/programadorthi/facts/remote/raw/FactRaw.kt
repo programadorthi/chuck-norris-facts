@@ -21,4 +21,3 @@ data class FactRaw(
         const val CATEGORIES_FIELD = "categories"
     }
 }
-

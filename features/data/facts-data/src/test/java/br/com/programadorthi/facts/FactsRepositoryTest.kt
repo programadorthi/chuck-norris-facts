@@ -157,5 +157,4 @@ class FactsRepositoryTest {
                 assertThat(localFactsRepositoryFake.lastSearches).isEqualTo(emptyList<String>())
             }
     }
-
 }

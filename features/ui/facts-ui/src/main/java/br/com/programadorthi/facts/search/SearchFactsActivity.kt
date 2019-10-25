@@ -14,11 +14,12 @@ import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.activity_search_facts.searchFactsCategoriesChipGroup
 import kotlinx.android.synthetic.main.activity_search_facts.searchFactsEditText
 import kotlinx.android.synthetic.main.activity_search_facts.searchFactsLastSearchesChipGroup
+import org.koin.androidx.scope.currentScope
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFactsActivity : AppCompatActivity() {
 
-    // TODO: Remove lateinit because that is not used
-    private lateinit var searchFactsViewModel: SearchFactsViewModel
+    private val searchFactsViewModel: SearchFactsViewModel by currentScope.viewModel(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
