@@ -22,9 +22,9 @@ class FactsUseCaseTest {
 
     @Test
     fun `should get empty categories when there is no categories in the data layer`() {
-        val offset = random.nextInt(1, 8)
+        val limit = random.nextInt( 8)
 
-        val testObserver = factsUseCase.categories(offset).test()
+        val testObserver = factsUseCase.categories(limit, true).test()
 
         testObserver
             .assertNoErrors()
@@ -36,13 +36,31 @@ class FactsUseCaseTest {
     fun `should get categories when there is categories in the data layer`() {
         val categories = listOf("cat1", "cat2", "cat3", "cat4", "cat5")
 
-        val offset = random.nextInt(1, categories.size + 1)
+        val limit = random.nextInt(categories.size)
 
-        val expected = categories.slice(IntRange(start = 0, endInclusive = offset - 1))
+        val expected = categories.slice(IntRange(start = 0, endInclusive = limit - 1))
 
         factsRepositoryFake.categories = categories
 
-        val testObserver = factsUseCase.categories(offset).test()
+        val testObserver = factsUseCase.categories(limit, false).test()
+
+        testObserver
+            .assertNoErrors()
+            .assertComplete()
+            .assertValue(expected)
+    }
+
+    @Test
+    fun `should get shuffled categories when shuffle is true`() {
+        val categories = listOf("cat1", "cat2", "cat3", "cat4", "cat5").shuffled()
+
+        val limit = random.nextInt(categories.size)
+
+        val expected = categories.slice(IntRange(start = 0, endInclusive = limit - 1))
+
+        factsRepositoryFake.categories = categories
+
+        val testObserver = factsUseCase.categories(limit, true).test()
 
         testObserver
             .assertNoErrors()
