@@ -12,11 +12,14 @@ class FactsMapper : RemoteMapper<FactsResponseRaw, List<Fact>>() {
             missingFields.add(FactsResponseRaw.RESULT_FIELD)
         }
 
-        val first = raw.result?.first() ?: return
-        when {
-            first.id == null -> missingFields.add(FactRaw.ID_FIELD)
-            first.url == null -> missingFields.add(FactRaw.URL_FIELD)
-            first.value == null -> missingFields.add(FactRaw.VALUE_FIELD)
+        val facts = raw.result ?: return
+        if (facts.isNotEmpty()) {
+            val first = facts.first()
+            when {
+                first.id == null -> missingFields.add(FactRaw.ID_FIELD)
+                first.url == null -> missingFields.add(FactRaw.URL_FIELD)
+                first.value == null -> missingFields.add(FactRaw.VALUE_FIELD)
+            }
         }
     }
 
