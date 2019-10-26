@@ -24,6 +24,8 @@ class FactsViewModel(
     }
 
     fun search(text: String) {
+        mutableFacts.postValue(Result.Loading)
+
         val disposable = factsUseCase.search(text)
             .toObservable()
             .flatMapIterable { items -> items }
@@ -37,8 +39,8 @@ class FactsViewModel(
             .toList()
             .map<Result<List<FactViewData>>> { items -> Result.Success(items) }
             .onErrorReturn { err -> Result.Error(err) }
-            .doOnSubscribe { mutableFacts.postValue(Result.Loading) }
             .subscribe(mutableFacts::postValue)
+
         compositeDisposable.add(disposable)
     }
 }

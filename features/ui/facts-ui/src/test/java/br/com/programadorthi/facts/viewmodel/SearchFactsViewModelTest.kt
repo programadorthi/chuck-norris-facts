@@ -1,4 +1,4 @@
-package br.com.programadorthi.facts
+package br.com.programadorthi.facts.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import br.com.programadorthi.domain.Result

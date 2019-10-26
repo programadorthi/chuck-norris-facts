@@ -53,7 +53,7 @@ class FactsActivity : AppCompatActivity() {
 
         if (requestCode == SEARCH_FACT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val query = data?.getStringExtra(SEARCH_RESULT_EXTRA_KEY) ?: EMPTY_TEXT
-            handleQuery(query)
+            factsViewModel.search(query)
         }
     }
 
@@ -86,12 +86,6 @@ class FactsActivity : AppCompatActivity() {
             else -> R.string.activity_facts_something_wrong
         }
         Toast.makeText(this, messageId, Toast.LENGTH_LONG).show()
-    }
-
-    private fun handleQuery(query: String) {
-        if (query.isNotBlank()) {
-            factsViewModel.search(query)
-        }
     }
 
     private fun shareFact(factViewData: FactViewData) {

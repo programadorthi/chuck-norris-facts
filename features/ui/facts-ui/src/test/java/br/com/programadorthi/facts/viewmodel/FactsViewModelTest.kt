@@ -1,7 +1,8 @@
-package br.com.programadorthi.facts
+package br.com.programadorthi.facts.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import br.com.programadorthi.domain.Result
+import br.com.programadorthi.facts.Fact
 import br.com.programadorthi.facts.facts.FactsViewModel
 import br.com.programadorthi.facts.fake.FactsUseCaseFake
 import br.com.programadorthi.facts.model.FactViewData

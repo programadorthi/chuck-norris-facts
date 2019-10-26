@@ -1,4 +1,3 @@
-import dependencies.InstrumentationTestsDependencies.Companion.instrumentationTest
 import dependencies.Libraries
 import dependencies.UnitTestDependencies.Companion.unitTest
 import modules.LibraryModule
@@ -15,6 +14,7 @@ plugins {
 
 dependencies {
     implementation(project(ProjectModules.Shared.DOMAIN))
+    implementation(project(ProjectModules.Shared.NETWORK))
     implementation(project(ProjectModules.Feature.Data.FACTS))
     implementation(project(ProjectModules.Feature.Domain.FACTS))
 
@@ -42,13 +42,7 @@ dependencies {
         }
 
         testImplementation(Libraries.ANDROID_TEST_ARCH_CORE)
-    }
-
-    instrumentationTest {
-        forEachDependency { androidTestImplementation(it) }
-
-        forEachProjectDependency(this@dependencies) {
-            androidTestImplementation(it)
-        }
+        testImplementation(Libraries.ANDROID_TEST_CORE)
+        testImplementation(Libraries.ROBOLECTRIC)
     }
 }
