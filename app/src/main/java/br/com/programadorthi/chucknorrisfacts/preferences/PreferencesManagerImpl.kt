@@ -5,11 +5,15 @@ import br.com.programadorthi.domain.persist.PreferencesManager
 
 class PreferencesManagerImpl(private val preferences: SharedPreferences) : PreferencesManager {
 
-    override fun getItems(key: String): Set<String> {
-        return preferences.getStringSet(key, emptySet()) ?: emptySet()
+    override fun getItem(key: String): String {
+        return preferences.getString(key, EMPTY) ?: EMPTY
     }
 
-    override fun putItems(key: String, items: Set<String>) {
-        preferences.edit().putStringSet(key, items).apply()
+    override fun putItem(key: String, item: String) {
+        preferences.edit().putString(key, item).apply()
+    }
+
+    private companion object {
+        private const val EMPTY = ""
     }
 }
