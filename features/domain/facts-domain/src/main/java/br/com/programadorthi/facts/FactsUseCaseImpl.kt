@@ -4,12 +4,12 @@ import io.reactivex.Single
 
 class FactsUseCaseImpl(private val factsRepository: FactsRepository) : FactsUseCase {
 
-    override fun categories(offset: Int, shuffle: Boolean): Single<List<String>> {
-        if (offset <= MIN_OFFSET) {
+    override fun categories(limit: Int, shuffle: Boolean): Single<List<String>> {
+        if (limit <= MIN_OFFSET) {
             return Single.just(emptyList())
         }
 
-        return factsRepository.fetchCategories(offset, shuffle)
+        return factsRepository.fetchCategories(limit, shuffle)
     }
 
     override fun lastSearches(): Single<List<String>> = factsRepository.getLastSearches()

@@ -3,6 +3,7 @@ package br.com.programadorthi.facts
 import br.com.programadorthi.facts.fake.LocalFactsRepositoryFake
 import br.com.programadorthi.facts.fake.RemoteFactsRepositoryFake
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import org.junit.Before
 import org.junit.Test
 import java.io.IOException
@@ -34,7 +35,21 @@ class FactsRepositoryTest {
 
     @Test
     fun `should get empty categories when there is no local and remote data`() {
-        val testObserver = factsRepository.fetchCategories(random.nextInt()).test()
+        val limit = random.nextInt(categories.size)
+
+        val testObserver = factsRepository.fetchCategories(limit, false).test()
+
+        testObserver
+            .assertNoErrors()
+            .assertComplete()
+            .assertValue(emptyList())
+    }
+
+    @Test
+    fun `should get empty categories when limit is zero`() {
+        val limit = 0
+
+        val testObserver = factsRepository.fetchCategories(limit, false).test()
 
         testObserver
             .assertNoErrors()
@@ -64,12 +79,12 @@ class FactsRepositoryTest {
 
     @Test
     fun `should get not empty categories when there is local data`() {
-        val offset = random.nextInt(0, categories.size)
-        val expected = categories.slice(IntRange(0, offset))
+        val limit = random.nextInt(1, categories.size)
+        val expected = categories.slice(IntRange(0, limit - 1))
 
         localFactsRepositoryFake.categories = expected
 
-        val testObserver = factsRepository.fetchCategories(offset).test()
+        val testObserver = factsRepository.fetchCategories(limit, false).test()
 
         testObserver
             .assertNoErrors()
@@ -79,12 +94,12 @@ class FactsRepositoryTest {
 
     @Test
     fun `should get not empty categories when there is remote data`() {
-        val offset = random.nextInt(0, categories.size)
-        val expected = categories.slice(IntRange(0, offset))
+        val limit = random.nextInt(1, categories.size)
+        val expected = categories.slice(IntRange(0, limit - 1))
 
         remoteFactsRepositoryFake.categories = expected
 
-        val testObserver = factsRepository.fetchCategories(offset).test()
+        val testObserver = factsRepository.fetchCategories(limit, false).test()
 
         testObserver
             .assertNoErrors()
@@ -95,11 +110,12 @@ class FactsRepositoryTest {
 
     @Test
     fun `should get error when fetching categories`() {
+        val limit = random.nextInt(categories.size)
         val expected = IOException("categories error")
 
         remoteFactsRepositoryFake.fetchCategoriesError = expected
 
-        val testObserver = factsRepository.fetchCategories(random.nextInt()).test()
+        val testObserver = factsRepository.fetchCategories(limit, false).test()
 
         testObserver
             .assertNotComplete()
@@ -111,8 +127,8 @@ class FactsRepositoryTest {
     fun `should get last searches when there is history terms`() {
         val expected = listOf("term1", "term2")
 
-        localFactsRepositoryFake.saveNewSearch(expected[0]).test()
-        localFactsRepositoryFake.saveNewSearch(expected[1]).test()
+        localFactsRepositoryFake.saveNewSearch(expected[0])
+        localFactsRepositoryFake.saveNewSearch(expected[1])
 
         val testObserver = factsRepository.getLastSearches().test()
 
@@ -156,5 +172,63 @@ class FactsRepositoryTest {
             .assertOf {
                 assertThat(localFactsRepositoryFake.lastSearches).isEqualTo(emptyList<String>())
             }
+    }
+
+    @Test
+    fun `should get empty shuffled categories when shuffle is true and limit is zero`() {
+        val limit = 0
+
+        remoteFactsRepositoryFake.categories = categories
+
+        val testObserver = factsRepository.fetchCategories(limit, true).test()
+
+        testObserver
+            .assertNoErrors()
+            .assertComplete()
+            .assertValue(emptyList())
+            .assertOf {
+                assertThat(localFactsRepositoryFake.categories).isEqualTo(emptyList<String>())
+            }
+    }
+
+    @Test
+    fun `should be impossible shuffle categories when have one category only`() {
+        val limit = random.nextInt(1, categories.size)
+        val expected = categories.slice(IntRange(0, 0))
+
+        remoteFactsRepositoryFake.categories = expected
+
+        val testObserver = factsRepository.fetchCategories(limit, true).test()
+
+        testObserver
+            .assertNoErrors()
+            .assertComplete()
+            .assertValue(expected)
+            .assertOf { assertThat(localFactsRepositoryFake.categories).isEqualTo(expected) }
+    }
+
+    @Test
+    fun `should get shuffled categories when shuffle is true and have more the one category`() {
+        val limit = random.nextInt(2, categories.size)
+        val expected = categories.slice(IntRange(0, limit - 1))
+
+        remoteFactsRepositoryFake.categories = expected
+
+        val testObserver = factsRepository.fetchCategories(limit, true).test()
+
+        testObserver
+            .assertNoErrors()
+            .assertComplete()
+            .assertValue { value -> value != expected }
+            .assertOf { assertThat(localFactsRepositoryFake.categories).isEqualTo(expected) }
+    }
+
+    @Test
+    fun `should get an IllegalArgumentException when limit is less than zero`() {
+        val limit = -1
+
+        assertThatIllegalArgumentException().isThrownBy {
+            factsRepository.fetchCategories(limit, false).test()
+        }.withMessage("count >= 0 required but it was -1")
     }
 }

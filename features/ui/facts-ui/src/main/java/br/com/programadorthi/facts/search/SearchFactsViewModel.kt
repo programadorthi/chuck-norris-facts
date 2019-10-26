@@ -28,7 +28,7 @@ class SearchFactsViewModel(
 
     fun fetchCategories() {
         val disposable = factsUseCase
-            .categories(offset = MAX_VISIBLE_CATEGORIES, shuffle = true)
+            .categories(limit = MAX_VISIBLE_CATEGORIES, shuffle = true)
             .map<Result<List<String>>> { cats -> Result.Success(cats) }
             .onErrorReturn { err -> Result.Error(err) }
             .subscribe(mutableCategories::postValue)

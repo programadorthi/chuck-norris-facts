@@ -9,7 +9,7 @@ class FactsRepositoryImpl(
     private val remoteFactsRepository: RemoteFactsRepository
 ) : FactsRepository {
 
-    override fun fetchCategories(offset: Int, shuffle: Boolean): Single<List<String>> {
+    override fun fetchCategories(limit: Int, shuffle: Boolean): Single<List<String>> {
         return localFactsRepository.getCategories()
             .flatMap { categories ->
                 if (categories.isEmpty()) {
@@ -21,7 +21,7 @@ class FactsRepositoryImpl(
             }
             .toObservable()
             .flatMapIterable { categories -> if (shuffle) categories.shuffled() else categories }
-            .take(offset.toLong())
+            .take(limit.toLong())
             .toList()
     }
 

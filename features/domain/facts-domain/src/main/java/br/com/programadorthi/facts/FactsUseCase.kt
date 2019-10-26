@@ -4,7 +4,7 @@ import io.reactivex.Single
 
 interface FactsUseCase {
 
-    fun categories(offset: Int, shuffle: Boolean): Single<List<String>>
+    fun categories(limit: Int, shuffle: Boolean): Single<List<String>>
 
     fun lastSearches(): Single<List<String>>
 
