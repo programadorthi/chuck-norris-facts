@@ -40,6 +40,8 @@ dependencies {
         forEachProjectDependency(this@dependencies) {
             testImplementation(it)
         }
+
+        testImplementation(Libraries.ANDROID_TEST_ARCH_CORE)
     }
 
     instrumentationTest {

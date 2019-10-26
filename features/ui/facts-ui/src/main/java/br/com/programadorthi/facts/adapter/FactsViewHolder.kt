@@ -10,8 +10,9 @@ import kotlinx.android.synthetic.main.item_fact.itemFactCategoryTextView
 import kotlinx.android.synthetic.main.item_fact.itemFactContentTextView
 import com.google.android.material.R as materialR
 
-class FactsViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
-    LayoutContainer {
+class FactsViewHolder(
+    override val containerView: View
+) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
     fun bind(fact: FactViewData) {
         setupFactContent(fact)
