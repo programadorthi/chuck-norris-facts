@@ -4,6 +4,7 @@
 
     <string name="menu_search_title">Search</string>
 
+    <string name="activity_facts_empty_search_result">No result for entered term</string>
     <string name="activity_facts_empty_search_term">Please, enter a term to search!</string>
     <string name="activity_facts_something_wrong">Who doesn\'t go wrong? This time was the Chuck Norris Server.</string>
 

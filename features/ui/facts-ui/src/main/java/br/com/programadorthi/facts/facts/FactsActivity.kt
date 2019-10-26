@@ -59,8 +59,18 @@ class FactsActivity : AppCompatActivity() {
 
     private fun handleFacts(result: Result<List<FactViewData>>) {
         when (result) {
-            is Result.Success -> factsAdapter.changeData(result.data)
             is Result.Error -> handleSearchError(result.cause)
+            is Result.Success -> {
+                if (result.data.isEmpty()) {
+                    Toast.makeText(
+                        this,
+                        R.string.activity_facts_empty_search_result,
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    factsAdapter.changeData(result.data)
+                }
+            }
         }
 
         factsProgressBar.visibility = if (result is Result.Loading) {
