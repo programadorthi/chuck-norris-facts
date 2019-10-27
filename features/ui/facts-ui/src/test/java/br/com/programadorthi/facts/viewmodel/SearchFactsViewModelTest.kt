@@ -111,5 +111,4 @@ class SearchFactsViewModelTest {
 
         assertThat(searchFactsViewModel.lastSearches.value).isEqualTo(expected)
     }
-
 }

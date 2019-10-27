@@ -128,5 +128,4 @@ class FactsViewModelTest {
 
         assertThat(results).isEqualTo(expected)
     }
-
 }

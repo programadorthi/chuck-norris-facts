@@ -114,5 +114,4 @@ class FactsMapperTest {
 
         assertThat(result).isEqualTo(expected)
     }
-
 }

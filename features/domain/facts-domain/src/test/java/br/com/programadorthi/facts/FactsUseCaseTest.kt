@@ -22,7 +22,7 @@ class FactsUseCaseTest {
 
     @Test
     fun `should get empty categories when there is no categories in the data layer`() {
-        val limit = random.nextInt( 8)
+        val limit = random.nextInt(8)
 
         val testObserver = factsUseCase.categories(limit, true).test()
 

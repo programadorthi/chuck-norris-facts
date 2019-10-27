@@ -104,7 +104,15 @@ class FactsActivityTest {
                 Fact(
                     categories = listOf("category"),
                     url = "url",
-                    value = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque tristique turpis id convallis ornare. Proin eget enim vel libero bibendum tincidunt nec et massa. Vivamus sagittis tristique nisi, vitae molestie velit vestibulum sed. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec nulla justo, sollicitudin eget massa vitae, tempus rutrum tortor. Donec nec purus elit. Aenean felis quam, iaculis id pharetra sit amet.",
+                    value = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque " +
+                            "tristique turpis id convallis ornare. Proin eget enim vel libero " +
+                            "bibendum tincidunt nec et massa. Vivamus sagittis tristique nisi, " +
+                            "vitae molestie velit vestibulum sed. Vestibulum ante ipsum primis " +
+                            "in faucibus orci luctus et ultrices posuere cubilia Curae; " +
+                            "Pellentesque habitant morbi tristique senectus et netus et " +
+                            "malesuada fames ac turpis egestas. Donec nulla justo, sollicitudin " +
+                            "eget massa vitae, tempus rutrum tortor. Donec nec purus elit. " +
+                            "Aenean felis quam, iaculis id pharetra sit amet.",
                     id = "2"
                 )
             )
@@ -304,5 +312,4 @@ class FactsActivityTest {
 
         return shadowOf(applicationContext).shownToasts
     }
-
 }
