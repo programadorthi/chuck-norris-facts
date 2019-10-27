@@ -82,7 +82,7 @@ class SearchFactsActivityTest {
         val scenario = launch(SearchFactsActivity::class.java)
 
         scenario.onActivity { activity ->
-            activity.searchFactsEditText.onEditorAction(EditorInfo.IME_ACTION_DONE)
+            activity.searchFactsEditText.onEditorAction(EditorInfo.IME_ACTION_SEARCH)
         }
 
         val resultCode = scenario.result.resultCode

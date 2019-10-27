@@ -15,6 +15,7 @@ import br.com.programadorthi.facts.R
 import br.com.programadorthi.facts.adapter.FactsAdapter
 import br.com.programadorthi.facts.model.FactViewData
 import br.com.programadorthi.facts.search.SearchFactsActivity
+import br.com.programadorthi.network.exception.NetworkingError
 import kotlinx.android.synthetic.main.activity_facts.factsProgressBar
 import kotlinx.android.synthetic.main.activity_facts.factsRecyclerView
 import org.koin.androidx.scope.currentScope
@@ -83,6 +84,8 @@ class FactsActivity : AppCompatActivity() {
     private fun handleSearchError(cause: Throwable) {
         val messageId = when (cause) {
             is FactsBusiness.EmptySearch -> R.string.activity_facts_empty_search_term
+            is NetworkingError.NoInternetConnection ->
+                R.string.activity_facts_no_internet_connection
             else -> R.string.activity_facts_something_wrong
         }
         Toast.makeText(this, messageId, Toast.LENGTH_LONG).show()

@@ -89,7 +89,7 @@ class SearchFactsActivity : AppCompatActivity() {
     private fun setupSearchEditText() {
         searchFactsEditText.apply {
             setOnEditorActionListener { view, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     goToFactsList(view.text.toString())
                 }
 

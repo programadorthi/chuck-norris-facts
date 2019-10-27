@@ -12,7 +12,7 @@ import org.junit.Test
 
 class LocalFactsRepositoryTest {
 
-    private val lastSearches = "[animal, weather, career, fashion, culture]"
+    private val lastSearches = "[\"animal\",\"weather\",\"career\",\"fashion\",\"culture\"]"
 
     private lateinit var preferencesManager: PreferencesManagerFake
 
@@ -67,6 +67,28 @@ class LocalFactsRepositoryTest {
             .assertNoErrors()
             .assertValue(expected)
             .assertOf { assertThat(preferencesManager.lastSearches).isEqualTo(searchesString) }
+    }
+
+    @Test
+    fun `should keep the same searches list when search for a previous term`() {
+        preferencesManager.lastSearches = lastSearches
+
+        localFactsRepository.saveNewSearch("animal")
+
+        assertThat(preferencesManager.lastSearches).isEqualTo(lastSearches)
+    }
+
+    @Test
+    fun `should increase searches list when search for a new term`() {
+        val searchesList = jsonParse.parse(StringSerializer.list, lastSearches)
+        val searchesWithNewTerm = searchesList + "act"
+        val searchesString = jsonParse.stringify(StringSerializer.list, searchesWithNewTerm)
+
+        preferencesManager.lastSearches = lastSearches
+
+        localFactsRepository.saveNewSearch("act")
+
+        assertThat(preferencesManager.lastSearches).isEqualTo(searchesString)
     }
 
     private companion object {

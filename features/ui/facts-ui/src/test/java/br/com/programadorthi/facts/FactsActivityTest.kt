@@ -81,7 +81,7 @@ class FactsActivityTest {
         launch(FactsActivity::class.java).onActivity { activity ->
             val expected = Intent(activity, SearchFactsActivity::class.java)
 
-            shadowOf(activity).clickMenuItem(R.id.menuSearch)
+            activity.clickSearchMenu()
 
             val applicationContext = ApplicationProvider.getApplicationContext<Application>()
 
@@ -124,9 +124,10 @@ class FactsActivityTest {
 
             factsUseCase.searchResult = facts
 
-            shadowOf(activity).clickMenuItem(R.id.menuSearch)
-
-            activity.receiveResult("term")
+            activity.run {
+                clickSearchMenu()
+                receiveResult("term")
+            }
 
             for (index in facts.indices) {
                 val viewHolder = recyclerView
@@ -178,9 +179,10 @@ class FactsActivityTest {
 
             factsUseCase.searchResult = facts
 
-            shadowOf(activity).clickMenuItem(R.id.menuSearch)
-
-            activity.receiveResult("term")
+            activity.run {
+                clickSearchMenu()
+                receiveResult("term")
+            }
 
             activity.factsRecyclerView
                 .findViewHolderForAdapterPosition(0)
@@ -201,9 +203,10 @@ class FactsActivityTest {
             val expectedText = activity.getText(R.string.activity_facts_empty_search_result)
             val expectedLength = Toast.LENGTH_LONG
 
-            shadowOf(activity).clickMenuItem(R.id.menuSearch)
-
-            activity.receiveResult("term")
+            activity.run {
+                clickSearchMenu()
+                receiveResult("term")
+            }
 
             assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(expectedText)
 
@@ -221,11 +224,12 @@ class FactsActivityTest {
             val expectedText = activity.getText(R.string.activity_facts_empty_search_term)
             val expectedLength = Toast.LENGTH_LONG
 
-            shadowOf(activity).clickMenuItem(R.id.menuSearch)
-
             factsUseCase.searchException = FactsBusiness.EmptySearch
 
-            activity.receiveResult("")
+            activity.run {
+                clickSearchMenu()
+                receiveResult("")
+            }
 
             assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(expectedText)
 
@@ -245,7 +249,10 @@ class FactsActivityTest {
 
             factsUseCase.searchException = NetworkingError.NoInternetConnection
 
-            activity.receiveResult("term")
+            activity.run {
+                clickSearchMenu()
+                receiveResult("term")
+            }
 
             assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(expectedText)
 
@@ -263,11 +270,12 @@ class FactsActivityTest {
             val expectedText = activity.getText(R.string.activity_facts_something_wrong)
             val expectedLength = Toast.LENGTH_LONG
 
-            shadowOf(activity).clickMenuItem(R.id.menuSearch)
-
             factsUseCase.searchException = Exception("something is wrong")
 
-            activity.receiveResult("term")
+            activity.run {
+                clickSearchMenu()
+                receiveResult("term")
+            }
 
             assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(expectedText)
 
@@ -279,13 +287,9 @@ class FactsActivityTest {
         }
     }
 
+    private fun Activity.clickSearchMenu() = shadowOf(this).clickMenuItem(R.id.menuSearch)
+
     private fun Activity.requestIntent() = Intent(this, SearchFactsActivity::class.java)
-
-    private fun getToasts(): List<Toast> {
-        val applicationContext = ApplicationProvider.getApplicationContext<Application>()
-
-        return shadowOf(applicationContext).shownToasts
-    }
 
     private fun Activity.receiveResult(term: String) {
         val intent = Intent().apply {
@@ -293,6 +297,12 @@ class FactsActivityTest {
         }
 
         shadowOf(this).receiveResult(requestIntent(), Activity.RESULT_OK, intent)
+    }
+
+    private fun getToasts(): List<Toast> {
+        val applicationContext = ApplicationProvider.getApplicationContext<Application>()
+
+        return shadowOf(applicationContext).shownToasts
     }
 
 }
