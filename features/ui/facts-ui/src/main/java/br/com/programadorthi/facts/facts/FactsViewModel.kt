@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel
 import br.com.programadorthi.domain.Result
 import br.com.programadorthi.facts.FactsUseCase
 import br.com.programadorthi.facts.model.FactViewData
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 
 class FactsViewModel(
+    private val scheduler: Scheduler,
     private val factsUseCase: FactsUseCase
 ) : ViewModel() {
 
@@ -24,9 +26,9 @@ class FactsViewModel(
     }
 
     fun search(text: String) {
-        mutableFacts.postValue(Result.Loading)
-
         val disposable = factsUseCase.search(text)
+            .subscribeOn(scheduler)
+            .doOnSubscribe { mutableFacts.postValue(Result.Loading) }
             .toObservable()
             .flatMapIterable { items -> items }
             .map { fact ->

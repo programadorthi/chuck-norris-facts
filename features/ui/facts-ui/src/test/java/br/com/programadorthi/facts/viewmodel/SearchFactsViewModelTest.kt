@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import br.com.programadorthi.domain.Result
 import br.com.programadorthi.facts.fake.FactsUseCaseFake
 import br.com.programadorthi.facts.search.SearchFactsViewModel
+import io.reactivex.schedulers.Schedulers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -22,7 +23,7 @@ class SearchFactsViewModelTest {
     fun `before each test`() {
         factsUseCase = FactsUseCaseFake()
 
-        searchFactsViewModel = SearchFactsViewModel(factsUseCase)
+        searchFactsViewModel = SearchFactsViewModel(Schedulers.trampoline(), factsUseCase)
     }
 
     @Test

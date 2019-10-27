@@ -6,6 +6,7 @@ import br.com.programadorthi.facts.Fact
 import br.com.programadorthi.facts.facts.FactsViewModel
 import br.com.programadorthi.facts.fake.FactsUseCaseFake
 import br.com.programadorthi.facts.model.FactViewData
+import io.reactivex.schedulers.Schedulers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -24,7 +25,7 @@ class FactsViewModelTest {
     fun `before each test`() {
         factsUseCase = FactsUseCaseFake()
 
-        factsViewModel = FactsViewModel(factsUseCase)
+        factsViewModel = FactsViewModel(Schedulers.trampoline(), factsUseCase)
     }
 
     @Test

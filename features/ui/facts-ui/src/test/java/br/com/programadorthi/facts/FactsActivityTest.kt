@@ -15,6 +15,7 @@ import br.com.programadorthi.facts.facts.FactsViewModel
 import br.com.programadorthi.facts.fake.FactsUseCaseFake
 import br.com.programadorthi.facts.search.SearchFactsActivity
 import br.com.programadorthi.network.exception.NetworkingError
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_facts.factsRecyclerView
 import kotlinx.android.synthetic.main.item_fact.view.itemFactCategoryTextView
 import kotlinx.android.synthetic.main.item_fact.view.itemFactContentTextView
@@ -50,7 +51,7 @@ class FactsActivityTest {
     fun `before each test`() {
         factsUseCase = FactsUseCaseFake()
 
-        factsViewModel = FactsViewModel(factsUseCase)
+        factsViewModel = FactsViewModel(Schedulers.trampoline(), factsUseCase)
 
         startKoin {
             modules(

@@ -6,7 +6,6 @@ import br.com.programadorthi.network.fake.CrashReportFake
 import br.com.programadorthi.network.fake.RemoteMapperFake
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.UnknownFieldException
 import kotlinx.serialization.UpdateNotSupportedException
@@ -33,8 +32,7 @@ class DefaultNetworkManagerTest {
 
         networkManager = DefaultNetworkManager(
             crashReport = crashReportFake,
-            connectionCheck = connectionCheckFake,
-            scheduler = Schedulers.trampoline()
+            connectionCheck = connectionCheckFake
         )
     }
 

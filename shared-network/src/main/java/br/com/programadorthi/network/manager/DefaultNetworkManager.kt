@@ -4,7 +4,6 @@ import br.com.programadorthi.domain.report.CrashReport
 import br.com.programadorthi.network.ConnectionCheck
 import br.com.programadorthi.network.exception.NetworkingError
 import io.reactivex.Completable
-import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.functions.Function
 import kotlinx.serialization.SerializationException
@@ -13,15 +12,13 @@ import java.net.UnknownHostException
 
 class DefaultNetworkManager(
     private val crashReport: CrashReport,
-    private val connectionCheck: ConnectionCheck,
-    private val scheduler: Scheduler
+    private val connectionCheck: ConnectionCheck
 ) : NetworkManager {
 
     override fun performAndDone(request: Completable): Completable {
         return when (connectionCheck.hasInternetConnection()) {
             false -> Completable.error(NetworkingError.NoInternetConnection)
             true -> request
-                .subscribeOn(scheduler)
                 .onErrorResumeNext { cause -> Completable.error(mapperException(cause)) }
         }
     }
@@ -30,7 +27,6 @@ class DefaultNetworkManager(
         return when (connectionCheck.hasInternetConnection()) {
             false -> Single.error(NetworkingError.NoInternetConnection)
             true -> request
-                .subscribeOn(scheduler)
                 .onErrorResumeNext { cause -> Single.error(mapperException(cause)) }
         }
     }
@@ -42,7 +38,6 @@ class DefaultNetworkManager(
         return when (connectionCheck.hasInternetConnection()) {
             false -> Single.error(NetworkingError.NoInternetConnection)
             true -> request
-                .subscribeOn(scheduler)
                 .map(mapper)
                 .onErrorResumeNext { cause -> Single.error(mapperException(cause)) }
         }

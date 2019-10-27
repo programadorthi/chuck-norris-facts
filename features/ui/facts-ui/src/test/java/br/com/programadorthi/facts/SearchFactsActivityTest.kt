@@ -11,6 +11,7 @@ import br.com.programadorthi.facts.fake.FactsUseCaseFake
 import br.com.programadorthi.facts.search.SearchFactsActivity
 import br.com.programadorthi.facts.search.SearchFactsViewModel
 import com.google.android.material.chip.Chip
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_search_facts.searchFactsCategoriesChipGroup
 import kotlinx.android.synthetic.main.activity_search_facts.searchFactsCategoriesTitleTextView
 import kotlinx.android.synthetic.main.activity_search_facts.searchFactsEditText
@@ -48,7 +49,7 @@ class SearchFactsActivityTest {
     fun `before each test`() {
         factsUseCase = FactsUseCaseFake()
 
-        searchFactsViewModel = SearchFactsViewModel(factsUseCase)
+        searchFactsViewModel = SearchFactsViewModel(Schedulers.trampoline(), factsUseCase)
 
         startKoin {
             modules(

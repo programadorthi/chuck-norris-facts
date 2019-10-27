@@ -21,8 +21,7 @@ val networkModule = module {
     single<NetworkManager> {
         DefaultNetworkManager(
             crashReport = get(),
-            connectionCheck = get(),
-            scheduler = get()
+            connectionCheck = get()
         )
     }
 

@@ -5,9 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import br.com.programadorthi.domain.Result
 import br.com.programadorthi.facts.FactsUseCase
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 
 class SearchFactsViewModel(
+    private val scheduler: Scheduler,
     private val factsUseCase: FactsUseCase
 ) : ViewModel() {
 
@@ -29,6 +31,7 @@ class SearchFactsViewModel(
     fun fetchCategories() {
         val disposable = factsUseCase
             .categories(limit = MAX_VISIBLE_CATEGORIES, shuffle = true)
+            .subscribeOn(scheduler)
             .map<Result<List<String>>> { cats -> Result.Success(cats) }
             .onErrorReturn { err -> Result.Error(err) }
             .subscribe(mutableCategories::postValue)
@@ -38,6 +41,7 @@ class SearchFactsViewModel(
     fun fetchLastSearches() {
         val disposable = factsUseCase
             .lastSearches()
+            .subscribeOn(scheduler)
             .subscribe(mutableLastSearches::postValue)
         compositeDisposable.add(disposable)
     }

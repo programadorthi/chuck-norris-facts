@@ -10,10 +10,20 @@ import org.koin.dsl.module
 
 val factsUiModule = module {
     scope(named<FactsActivity>()) {
-        viewModel { FactsViewModel(factsUseCase = get()) }
+        viewModel {
+            FactsViewModel(
+                scheduler = get(),
+                factsUseCase = get()
+            )
+        }
     }
 
     scope(named<SearchFactsActivity>()) {
-        viewModel { SearchFactsViewModel(factsUseCase = get()) }
+        viewModel {
+            SearchFactsViewModel(
+                scheduler = get(),
+                factsUseCase = get()
+            )
+        }
     }
 }
