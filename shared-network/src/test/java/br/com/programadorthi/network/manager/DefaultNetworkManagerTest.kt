@@ -1,12 +1,13 @@
 package br.com.programadorthi.network.manager
 
 import br.com.programadorthi.network.exception.NetworkingError
+import br.com.programadorthi.network.exception.NetworkingErrorMapper
 import br.com.programadorthi.network.fake.ConnectionCheckFake
 import br.com.programadorthi.network.fake.CrashReportFake
+import br.com.programadorthi.network.fake.DefaultRetryPolicyFake
 import br.com.programadorthi.network.fake.RemoteMapperFake
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.UnknownFieldException
 import kotlinx.serialization.UpdateNotSupportedException
@@ -23,6 +24,10 @@ class DefaultNetworkManagerTest {
 
     private lateinit var crashReportFake: CrashReportFake
 
+    private lateinit var defaultRetryPolicyFake: DefaultRetryPolicyFake
+
+    private lateinit var networkingErrorMapper: NetworkingErrorMapper
+
     private lateinit var networkManager: NetworkManager
 
     @Before
@@ -31,15 +36,24 @@ class DefaultNetworkManagerTest {
 
         crashReportFake = CrashReportFake()
 
+        defaultRetryPolicyFake = DefaultRetryPolicyFake()
+
+        networkingErrorMapper = NetworkingErrorMapper(
+            crashReport = crashReportFake
+        )
+
         networkManager = DefaultNetworkManager(
-            crashReport = crashReportFake,
             connectionCheck = connectionCheckFake,
-            scheduler = Schedulers.trampoline()
+            networkingErrorMapper = networkingErrorMapper,
+            retryPolicy = defaultRetryPolicyFake
         )
     }
 
     @Test
-    fun `should success when all works fine`() {
+    fun `should all methods success when all works fine`() {
+
+        defaultRetryPolicyFake.throwException = false
+
         val completableResult = networkManager.performAndDone(Completable.complete()).test()
 
         completableResult
@@ -64,7 +78,6 @@ class DefaultNetworkManagerTest {
             .assertNoErrors()
             .assertComplete()
             .assertValue(Integer.MAX_VALUE)
-
     }
 
     @Test
@@ -73,19 +86,21 @@ class DefaultNetworkManagerTest {
 
         val completableResult = networkManager.performAndDone(Completable.never()).test()
 
+        completableResult.awaitTerminalEvent()
+
         completableResult
             .assertNotComplete()
             .assertNoValues()
-            .assertError { it is NetworkingError.NoInternetConnection }
-            .assertOf { assertThat(crashReportFake.reported).isNull() }
+            .assertError(NetworkingError.NoInternetConnection)
+            .assertOf { assertThat(crashReportFake.reported).isEqualTo(null) }
 
         val singleResult = networkManager.performAndReturnsData(Single.never<Nothing>()).test()
 
         singleResult
             .assertNotComplete()
             .assertNoValues()
-            .assertError { it is NetworkingError.NoInternetConnection }
-            .assertOf { assertThat(crashReportFake.reported).isNull() }
+            .assertError(NetworkingError.NoInternetConnection)
+            .assertOf { assertThat(crashReportFake.reported).isEqualTo(null) }
 
         val singleMappedResult = networkManager.performAndReturnsMappedData(
             RemoteMapperFake(), Single.never<String>()
@@ -94,9 +109,8 @@ class DefaultNetworkManagerTest {
         singleMappedResult
             .assertNotComplete()
             .assertNoValues()
-            .assertError { it is NetworkingError.NoInternetConnection }
-            .assertOf { assertThat(crashReportFake.reported).isNull() }
-
+            .assertError(NetworkingError.NoInternetConnection)
+            .assertOf { assertThat(crashReportFake.reported).isEqualTo(null) }
     }
 
     @Test
@@ -105,12 +119,13 @@ class DefaultNetworkManagerTest {
             RemoteMapperFake(throwException = true), Single.just("")
         ).test()
 
+        defaultRetryPolicyFake.publisher.onNext(NetworkingError.NoInternetConnection)
+
         singleMappedResult
             .assertNotComplete()
             .assertNoValues()
             .assertError { it is NetworkingError.EssentialParamMissing }
             .assertOf { assertThat(crashReportFake.reported).isNotNull() }
-
     }
 
     @Test
@@ -150,7 +165,6 @@ class DefaultNetworkManagerTest {
             .assertNoValues()
             .assertError { it is NetworkingError.InvalidDataFormat }
             .assertOf { assertThat(crashReportFake.reported).isEqualTo(singleMappedError) }
-
     }
 
     @Test
@@ -184,7 +198,6 @@ class DefaultNetworkManagerTest {
             .assertNoValues()
             .assertError { it is NetworkingError.ConnectionTimeout }
             .assertOf { assertThat(crashReportFake.reported).isNull() }
-
     }
 
     @Test
@@ -224,7 +237,6 @@ class DefaultNetworkManagerTest {
             .assertNoValues()
             .assertError { it is NetworkingError.UnknownEndpoint }
             .assertOf { assertThat(crashReportFake.reported).isEqualTo(singleMappedError) }
-
     }
 
     @Test
@@ -264,6 +276,5 @@ class DefaultNetworkManagerTest {
             .assertNoValues()
             .assertError { it is NetworkingError.UnknownNetworkException }
             .assertOf { assertThat(crashReportFake.reported).isEqualTo(singleMappedError) }
-
     }
 }

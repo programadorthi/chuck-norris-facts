@@ -23,6 +23,7 @@ dependencies {
     implementation(Libraries.OKHTTP)
     implementation(Libraries.RETROFIT)
     implementation(Libraries.RETROFIT_KOTLIN_SERIALIZATION_CONVERTER)
+    implementation(Libraries.RETROFIT_RX_JAVA_ADAPTER)
 
     unitTest {
         forEachDependency { testImplementation(it) }
