@@ -4,7 +4,9 @@ import br.com.programadorthi.chucknorrisfacts.BuildConfig
 import br.com.programadorthi.chucknorrisfacts.network.ConnectionCheckImpl
 import br.com.programadorthi.network.ConnectionCheck
 import br.com.programadorthi.network.RetrofitBuilder
+import br.com.programadorthi.network.exception.NetworkingErrorMapper
 import br.com.programadorthi.network.manager.DefaultNetworkManager
+import br.com.programadorthi.network.manager.DefaultRetryPolicy
 import br.com.programadorthi.network.manager.NetworkManager
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -14,14 +16,17 @@ import org.koin.dsl.module
 import timber.log.Timber
 
 private const val HTTP_LOGGING_INTERCEPTOR = "HTTP_LOGGING_INTERCEPTOR"
+private const val DEFAULT_RETRY_POLICY = "DEFAULT_RETRY_POLICY"
+private const val NETWORKING_ERROR_MAPPER = "NETWORKING_ERROR_MAPPER"
 
 val networkModule = module {
     single<ConnectionCheck> { ConnectionCheckImpl(get()) }
 
     single<NetworkManager> {
         DefaultNetworkManager(
-            crashReport = get(),
-            connectionCheck = get()
+            connectionCheck = get(),
+            networkingErrorMapper = get(named(NETWORKING_ERROR_MAPPER)),
+            retryPolicy = get(named(DEFAULT_RETRY_POLICY))
         )
     }
 
@@ -31,6 +36,10 @@ val networkModule = module {
             httpClient = get()
         )
     }
+
+    factory(named(DEFAULT_RETRY_POLICY)) { DefaultRetryPolicy(scheduler = get()) }
+
+    factory(named(NETWORKING_ERROR_MAPPER)) { NetworkingErrorMapper(crashReport = get()) }
 
     factory<HttpLoggingInterceptor.Logger> {
         object : HttpLoggingInterceptor.Logger {

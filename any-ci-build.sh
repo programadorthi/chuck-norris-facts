@@ -17,4 +17,4 @@
 ./gradlew clean test
 
 # Action to build development version
-./gradlew clean assembleDevDebug
+./gradlew clean assembleProdRelease
