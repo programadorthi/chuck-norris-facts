@@ -1,34 +1,35 @@
 package br.com.programadorthi.network.manager
 
-import br.com.programadorthi.domain.report.CrashReport
 import br.com.programadorthi.network.ConnectionCheck
 import br.com.programadorthi.network.exception.NetworkingError
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.functions.Function
-import kotlinx.serialization.SerializationException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
+import org.reactivestreams.Publisher
 
 class DefaultNetworkManager(
-    private val crashReport: CrashReport,
-    private val connectionCheck: ConnectionCheck
+    private val connectionCheck: ConnectionCheck,
+    private val networkingErrorMapper: Function<Throwable, NetworkingError>,
+    private val retryPolicy: Function<Flowable<Throwable>, Publisher<*>>
 ) : NetworkManager {
 
     override fun performAndDone(request: Completable): Completable {
         return when (connectionCheck.hasInternetConnection()) {
             false -> Completable.error(NetworkingError.NoInternetConnection)
             true -> request
-                .onErrorResumeNext { cause -> Completable.error(mapperException(cause)) }
-        }
+                .onErrorResumeNext { cause ->
+                    Completable.error(networkingErrorMapper.apply(cause))
+                }
+        }.retryWhen(retryPolicy)
     }
 
     override fun <Data> performAndReturnsData(request: Single<Data>): Single<Data> {
         return when (connectionCheck.hasInternetConnection()) {
             false -> Single.error(NetworkingError.NoInternetConnection)
             true -> request
-                .onErrorResumeNext { cause -> Single.error(mapperException(cause)) }
-        }
+                .onErrorResumeNext { cause -> Single.error(networkingErrorMapper.apply(cause)) }
+        }.retryWhen(retryPolicy)
     }
 
     override fun <From, To> performAndReturnsMappedData(
@@ -39,23 +40,7 @@ class DefaultNetworkManager(
             false -> Single.error(NetworkingError.NoInternetConnection)
             true -> request
                 .map(mapper)
-                .onErrorResumeNext { cause -> Single.error(mapperException(cause)) }
-        }
-    }
-
-    private fun mapperException(cause: Throwable): NetworkingError {
-        val error = when (cause) {
-            is NetworkingError.EssentialParamMissing -> cause
-            is SerializationException -> NetworkingError.InvalidDataFormat
-            is SocketTimeoutException -> NetworkingError.ConnectionTimeout
-            is UnknownHostException -> NetworkingError.UnknownEndpoint(cause)
-            else -> NetworkingError.UnknownNetworkException(cause)
-        }
-
-        if (error.needsReport()) {
-            crashReport.report(cause)
-        }
-
-        return error
+                .onErrorResumeNext { cause -> Single.error(networkingErrorMapper.apply(cause)) }
+        }.retryWhen(retryPolicy)
     }
 }

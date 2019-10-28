@@ -1,9 +1,7 @@
 package br.com.programadorthi.network.manager
 
 import br.com.programadorthi.network.exception.NetworkingError
-import br.com.programadorthi.network.fake.ConnectionCheckFake
-import br.com.programadorthi.network.fake.CrashReportFake
-import br.com.programadorthi.network.fake.RemoteMapperFake
+import br.com.programadorthi.network.fake.*
 import io.reactivex.Completable
 import io.reactivex.Single
 import kotlinx.serialization.MissingFieldException
@@ -22,6 +20,10 @@ class DefaultNetworkManagerTest {
 
     private lateinit var crashReportFake: CrashReportFake
 
+    private lateinit var defaultRetryPolicyFake: DefaultRetryPolicyFake
+
+    private lateinit var networkingErrorMapperFake: NetworkingErrorMapperFake
+
     private lateinit var networkManager: NetworkManager
 
     @Before
@@ -30,9 +32,16 @@ class DefaultNetworkManagerTest {
 
         crashReportFake = CrashReportFake()
 
+        defaultRetryPolicyFake = DefaultRetryPolicyFake()
+
+        networkingErrorMapperFake = NetworkingErrorMapperFake(
+            crashReport = crashReportFake
+        )
+
         networkManager = DefaultNetworkManager(
-            crashReport = crashReportFake,
-            connectionCheck = connectionCheckFake
+            connectionCheck = connectionCheckFake,
+            networkingErrorMapper = networkingErrorMapperFake,
+            retryPolicy = defaultRetryPolicyFake
         )
     }
 
