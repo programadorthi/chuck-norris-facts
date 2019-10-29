@@ -1,22 +1,3 @@
-# Stone Mobile Engineer Challenge
-
-Este projeto tem como finalidade participar da candidatura a vaga de Mobile Engineer na Stone.
-É um projeto mobile Android que aplica, ao máximo possível, o que foi soliciado no desafio.
-
-# Simulando Build de CI
-
-As configuraçoes de CI variam de serviço para serviço. Esse projeto tem apenas um script que simula como seria o build de CI. As chamadas presentes no script funciona em qualquer ferramenta de CI. Para simular basta executar o script:
-
-```
-./any-ci-build.sh
-```
-
-> Na execução serão realizados os seguintes passos:
-  - Validação com o ktlint
-  - Validação com o detekt
-  - Execução de todos os testes existentes no projeto
-  - Build do projeto versão desenvolvimento
-
 # Configurações mínimas
 
 - Gradle 5.4.1;
@@ -52,6 +33,20 @@ Referências: [Migrating Android build scripts from Groovy to Kotlin DSL], [Kotl
 -   Refactoring is a pain in 🤬
 
 Referência: [Migrating Android build scripts from Groovy to Kotlin DSL]
+
+# Simulando Build de CI
+
+As configuraçoes de CI variam de serviço para serviço. Esse projeto tem apenas um script que simula como seria o build de CI. As chamadas presentes no script funciona em qualquer ferramenta de CI. Para simular basta executar o script:
+
+```
+./any-ci-build.sh
+```
+
+> Na execução serão realizados os seguintes passos:
+  - Validação com o ktlint
+  - Validação com o detekt
+  - Execução de todos os testes existentes no projeto
+  - Build do projeto versão desenvolvimento
 
 # Estrutura do projeto
 
