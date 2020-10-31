@@ -20,6 +20,7 @@ object PluginDependencies {
 
 object PluginIds {
     const val ANDROID_APPLICATION = "com.android.application"
+    const val ANDROID_DYNAMIC_FEATURE = "com.android.dynamic-feature"
     const val ANDROID_LIBRARY = "com.android.library"
     const val KOTLIN_ANDROD = "kotlin-android"
     const val JACOCO_UNIFIED = "com.vanniktech.android.junit.jacoco"
