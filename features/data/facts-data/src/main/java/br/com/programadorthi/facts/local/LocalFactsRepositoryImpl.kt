@@ -2,9 +2,9 @@ package br.com.programadorthi.facts.local
 
 import br.com.programadorthi.domain.persist.PreferencesManager
 import io.reactivex.Single
-import kotlinx.serialization.internal.StringSerializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.list
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
 
 class LocalFactsRepositoryImpl(
     private val preferencesManager: PreferencesManager
@@ -34,11 +34,11 @@ class LocalFactsRepositoryImpl(
         if (json.isBlank()) {
             return emptyList()
         }
-        return jsonParse.parse(StringSerializer.list, json)
+        return jsonParse.decodeFromString(ListSerializer(String.serializer()), json)
     }
 
     private fun saveList(key: String, items: List<String>) {
-        val json = jsonParse.stringify(StringSerializer.list, items)
+        val json = jsonParse.encodeToString(ListSerializer(String.serializer()), items)
         preferencesManager.putItem(key, json)
     }
 
@@ -46,6 +46,6 @@ class LocalFactsRepositoryImpl(
         private const val CATEGORIES_KEY = "categories"
         private const val LAST_SEARCHES_KEY = "last_searches"
 
-        private val jsonParse = Json.plain
+        private val jsonParse = Json
     }
 }

@@ -8,8 +8,8 @@ val module = LibraryModule(rootDir, LibraryType.Kotlin)
 apply(from = module.script())
 
 plugins {
-    id(PluginIds.KOTLIN)
-    id(PluginIds.KOTLIN_SERIALIZATION)
+    kotlin("jvm")
+    kotlin("plugin.serialization")
 }
 
 dependencies {
@@ -17,7 +17,7 @@ dependencies {
     implementation(project(JavaModules.SHARED_NETWORK))
     implementation(project(JavaModules.Features.Domain.FACTS_DOMAIN))
 
-    implementation(Libraries.KOTLIN_STDLIB)
+    implementation(kotlin("stdlib-jdk8"))
     implementation(Libraries.KOTLIN_SERIALIZATION)
 
     implementation(Libraries.RX_JAVA)

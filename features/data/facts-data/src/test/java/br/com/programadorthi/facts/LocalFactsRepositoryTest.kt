@@ -3,9 +3,9 @@ package br.com.programadorthi.facts
 import br.com.programadorthi.facts.fake.PreferencesManagerFake
 import br.com.programadorthi.facts.local.LocalFactsRepository
 import br.com.programadorthi.facts.local.LocalFactsRepositoryImpl
-import kotlinx.serialization.internal.StringSerializer
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.list
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -39,7 +39,7 @@ class LocalFactsRepositoryTest {
     fun `should have searches when last searches is not empty`() {
         preferencesManager.putItem(LAST_SEARCHES_KEY, lastSearches)
 
-        val expected = jsonParse.parse(StringSerializer.list, lastSearches).asReversed()
+        val expected = jsonParse.decodeFromString(ListSerializer(String.serializer()), lastSearches).asReversed()
 
         val testObserver = localFactsRepository.getLastSearches().test()
 
@@ -52,9 +52,9 @@ class LocalFactsRepositoryTest {
 
     @Test
     fun `should have ordered searches when put a new term in the history`() {
-        val searchesList = jsonParse.parse(StringSerializer.list, lastSearches)
+        val searchesList = jsonParse.decodeFromString(ListSerializer(String.serializer()), lastSearches)
         val searchesWithNewTerm = searchesList + "act"
-        val searchesString = jsonParse.stringify(StringSerializer.list, searchesWithNewTerm)
+        val searchesString = jsonParse.encodeToString(ListSerializer(String.serializer()), searchesWithNewTerm)
 
         preferencesManager.putItem(LAST_SEARCHES_KEY, searchesString)
 
@@ -80,9 +80,9 @@ class LocalFactsRepositoryTest {
 
     @Test
     fun `should increase searches list when search for a new term`() {
-        val searchesList = jsonParse.parse(StringSerializer.list, lastSearches)
+        val searchesList = jsonParse.decodeFromString(ListSerializer(String.serializer()), lastSearches)
         val searchesWithNewTerm = searchesList + "act"
-        val searchesString = jsonParse.stringify(StringSerializer.list, searchesWithNewTerm)
+        val searchesString = jsonParse.encodeToString(ListSerializer(String.serializer()), searchesWithNewTerm)
 
         preferencesManager.lastSearches = lastSearches
 
@@ -94,6 +94,6 @@ class LocalFactsRepositoryTest {
     private companion object {
         private const val LAST_SEARCHES_KEY = "last_searches"
 
-        private val jsonParse = Json.plain
+        private val jsonParse = Json
     }
 }

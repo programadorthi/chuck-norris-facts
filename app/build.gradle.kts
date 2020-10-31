@@ -96,7 +96,7 @@ dependencies {
     implementation(project(JavaModules.Features.Data.FACTS_DATA))
     implementation(project(LibraryModules.Features.Ui.FACTS_UI))
 
-    implementation(Libraries.KOTLIN_STDLIB)
+    implementation(kotlin("stdlib-jdk8"))
 
     implementation(Libraries.APP_COMPAT)
     implementation(Libraries.CORE_KTX)

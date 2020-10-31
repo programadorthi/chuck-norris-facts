@@ -3,7 +3,7 @@ package br.com.programadorthi.network.manager
 import br.com.programadorthi.network.exception.NetworkingError
 import br.com.programadorthi.network.exception.NetworkingErrorMapper
 import br.com.programadorthi.network.fake.CrashReportFake
-import kotlinx.serialization.MissingFieldException
+import kotlinx.serialization.SerializationException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -37,7 +37,7 @@ class NetworkingErrorMapperTest {
     fun `should throw InvalidDataFormat when throwable is a SerializationException`() {
         val expected = NetworkingError.InvalidDataFormat
 
-        val exception = networkingErrorMapper.apply(MissingFieldException("field"))
+        val exception = networkingErrorMapper.apply(SerializationException("field"))
 
         assertThat(exception).isEqualTo(expected)
     }
@@ -84,7 +84,7 @@ class NetworkingErrorMapperTest {
 
     @Test
     fun `should report InvalidDataFormat when throwable is a SerializationException`() {
-        val expected = MissingFieldException("field")
+        val expected = SerializationException("field")
 
         networkingErrorMapper.apply(expected)
 

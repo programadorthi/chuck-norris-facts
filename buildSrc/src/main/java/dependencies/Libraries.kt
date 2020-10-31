@@ -1,14 +1,9 @@
 package dependencies
 
-import configs.KotlinConfig
-
 object Libraries {
 
-    // Kotlin
-    const val KOTLIN_STDLIB = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${KotlinConfig.VERSION}"
-
     // Kotlin serialization
-    const val KOTLIN_SERIALIZATION = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Versions.KOTLIN_SERIALIZATION}"
+    const val KOTLIN_SERIALIZATION = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.KOTLIN_SERIALIZATION}"
 
     // RxJava
     const val RX_JAVA = "io.reactivex.rxjava2:rxjava:${Versions.RX_JAVA}"
@@ -59,14 +54,14 @@ object Libraries {
     const val ESPRESSO_CONTRIB = "androidx.test.espresso:espresso-contrib:${Versions.ESPRESSO}"
 
     private object Versions {
-        const val KOTLIN_SERIALIZATION = "0.12.0"
+        const val KOTLIN_SERIALIZATION = "1.0.1"
 
         const val RX_JAVA = "2.2.13"
 
         const val OKHTTP = "4.2.0"
         const val RETROFIT = "2.6.2"
         const val RETROFIT_RX_JAVA_ADAPTER = "2.6.2"
-        const val RETROFIT_KOTLIN_SERIALIZATION_CONVERTER = "0.4.0"
+        const val RETROFIT_KOTLIN_SERIALIZATION_CONVERTER = "0.8.0"
 
         const val APP_COMPAT = "1.1.0"
         const val CORE_KTX = "1.1.0"

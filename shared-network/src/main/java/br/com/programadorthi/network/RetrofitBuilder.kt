@@ -11,7 +11,12 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 
 object RetrofitBuilder {
     private val contentType = "application/json".toMediaType()
-    private val jsonFactory = Json.nonstrict.asConverterFactory(contentType)
+    private val jsonFactory = Json {
+        allowSpecialFloatingPointValues = true
+        ignoreUnknownKeys = true
+        isLenient = true
+        useArrayPolymorphism = true
+    }.asConverterFactory(contentType)
     private val rxJavaCallAdapterFactory = RxJava2CallAdapterFactory.create()
 
     operator fun invoke(

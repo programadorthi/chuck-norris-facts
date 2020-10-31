@@ -18,6 +18,5 @@ apply(plugin = "io.labs.dotanuki.magicmodules")
 configure<MagicModulesExtension> {
     maxDepthToBuildScript = 4
     rawApplicationPlugins = listOf("PluginIds.ANDROID_APPLICATION")
-    rawJavaLibraryPlugins = listOf("PluginIds.KOTLIN")
     rawLibraryPlugins = listOf("PluginIds.ANDROID_LIBRARY")
 }

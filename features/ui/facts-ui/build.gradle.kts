@@ -17,7 +17,7 @@ dependencies {
     implementation(project(JavaModules.Features.Domain.FACTS_DOMAIN))
     implementation(project(JavaModules.Features.Data.FACTS_DATA))
 
-    implementation(Libraries.KOTLIN_STDLIB)
+    implementation(kotlin("stdlib-jdk8"))
 
     implementation(Libraries.APP_COMPAT)
     implementation(Libraries.CONSTRAINT_LAYOUT)

@@ -8,9 +8,7 @@ import br.com.programadorthi.network.fake.DefaultRetryPolicyFake
 import br.com.programadorthi.network.fake.RemoteMapperFake
 import io.reactivex.Completable
 import io.reactivex.Single
-import kotlinx.serialization.MissingFieldException
-import kotlinx.serialization.UnknownFieldException
-import kotlinx.serialization.UpdateNotSupportedException
+import kotlinx.serialization.SerializationException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -130,7 +128,7 @@ class DefaultNetworkManagerTest {
 
     @Test
     fun `should has InvalidDataFormat error when the server response json data has invalid format`() {
-        val completableError = MissingFieldException("field")
+        val completableError = SerializationException("field")
 
         val completableResult = networkManager.performAndDone(
             Completable.error(completableError)
@@ -142,7 +140,7 @@ class DefaultNetworkManagerTest {
             .assertError { it is NetworkingError.InvalidDataFormat }
             .assertOf { assertThat(crashReportFake.reported).isEqualTo(completableError) }
 
-        val singleError = UnknownFieldException(0)
+        val singleError = SerializationException("0")
 
         val singleResult = networkManager.performAndReturnsData(
             Single.error<Nothing>(singleError)
@@ -154,10 +152,10 @@ class DefaultNetworkManagerTest {
             .assertError { it is NetworkingError.InvalidDataFormat }
             .assertOf { assertThat(crashReportFake.reported).isEqualTo(singleError) }
 
-        val singleMappedError = UpdateNotSupportedException("class")
+        val singleMappedError = SerializationException("class")
 
         val singleMappedResult = networkManager.performAndReturnsMappedData(
-            RemoteMapperFake(), Single.error<String>(singleMappedError)
+            RemoteMapperFake(), Single.error(singleMappedError)
         ).test()
 
         singleMappedResult

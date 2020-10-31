@@ -8,13 +8,13 @@ val module = LibraryModule(rootDir, LibraryType.Kotlin)
 apply(from = module.script())
 
 plugins {
-    id(PluginIds.KOTLIN)
+    kotlin("jvm")
 }
 
 dependencies {
     implementation(project(JavaModules.SHARED_DOMAIN))
 
-    implementation(Libraries.KOTLIN_STDLIB)
+    implementation(kotlin("stdlib-jdk8"))
 
     implementation(Libraries.RX_JAVA)
 

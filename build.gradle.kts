@@ -6,8 +6,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     repositories {
         google()
+        gradlePluginPortal()
         jcenter()
-        maven(url = "https://plugins.gradle.org/m2/")
     }
     dependencies {
         classpath(PluginDependencies.ANDROID_GRADLE)
