@@ -1,12 +1,23 @@
-import modules.ProjectModules
+import io.labs.dotanuki.magicmodules.MagicModulesExtension
 
 rootProject.name = "Chuck Norris Facts"
 
-include(
-    ProjectModules.APP,
-    ProjectModules.Feature.Data.FACTS,
-    ProjectModules.Feature.Domain.FACTS,
-    ProjectModules.Feature.Ui.FACTS,
-    ProjectModules.Shared.DOMAIN,
-    ProjectModules.Shared.NETWORK
-)
+buildscript {
+    repositories {
+        mavenCentral()
+        maven(url = "https://jitpack.io")
+    }
+
+    dependencies {
+        classpath("com.github.dotanuki-labs:magic-modules:0.0.3")
+    }
+}
+
+apply(plugin = "io.labs.dotanuki.magicmodules")
+
+configure<MagicModulesExtension> {
+    maxDepthToBuildScript = 4
+    rawApplicationPlugins = listOf("PluginIds.ANDROID_APPLICATION")
+    rawJavaLibraryPlugins = listOf("PluginIds.KOTLIN")
+    rawLibraryPlugins = listOf("PluginIds.ANDROID_LIBRARY")
+}

@@ -1,7 +1,7 @@
 import configs.KotlinConfig
 
 private object Versions {
-    const val ANDROID_GRADLE = "3.5.0"
+    const val ANDROID_GRADLE = "4.1.0"
     const val TEST_LOGGER = "1.7.0"
     const val KTLINT = "8.2.0"
     const val JACOCO_UNIFIED = "0.15.0"

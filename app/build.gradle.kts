@@ -5,7 +5,6 @@ import configs.SigningConfig
 import dependencies.InstrumentationTestsDependencies.Companion.instrumentationTest
 import dependencies.Libraries
 import dependencies.UnitTestDependencies.Companion.unitTest
-import modules.ProjectModules
 
 plugins {
     id(PluginIds.ANDROID_APPLICATION)
@@ -91,11 +90,11 @@ android {
 }
 
 dependencies {
-    implementation(project(ProjectModules.Shared.DOMAIN))
-    implementation(project(ProjectModules.Shared.NETWORK))
-    implementation(project(ProjectModules.Feature.Data.FACTS))
-    implementation(project(ProjectModules.Feature.Domain.FACTS))
-    implementation(project(ProjectModules.Feature.Ui.FACTS))
+    implementation(project(JavaModules.SHARED_DOMAIN))
+    implementation(project(JavaModules.SHARED_NETWORK))
+    implementation(project(JavaModules.Features.Domain.FACTS_DOMAIN))
+    implementation(project(JavaModules.Features.Data.FACTS_DATA))
+    implementation(project(LibraryModules.Features.Ui.FACTS_UI))
 
     implementation(Libraries.KOTLIN_STDLIB)
 

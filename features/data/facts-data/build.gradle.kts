@@ -2,7 +2,6 @@ import dependencies.Libraries
 import dependencies.UnitTestDependencies.Companion.unitTest
 import modules.LibraryModule
 import modules.LibraryType
-import modules.ProjectModules
 
 val module = LibraryModule(rootDir, LibraryType.Kotlin)
 
@@ -14,9 +13,9 @@ plugins {
 }
 
 dependencies {
-    implementation(project(ProjectModules.Shared.DOMAIN))
-    implementation(project(ProjectModules.Shared.NETWORK))
-    implementation(project(ProjectModules.Feature.Domain.FACTS))
+    implementation(project(JavaModules.SHARED_DOMAIN))
+    implementation(project(JavaModules.SHARED_NETWORK))
+    implementation(project(JavaModules.Features.Domain.FACTS_DOMAIN))
 
     implementation(Libraries.KOTLIN_STDLIB)
     implementation(Libraries.KOTLIN_SERIALIZATION)

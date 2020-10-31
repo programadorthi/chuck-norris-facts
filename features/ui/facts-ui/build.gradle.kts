@@ -2,7 +2,6 @@ import dependencies.Libraries
 import dependencies.UnitTestDependencies.Companion.unitTest
 import modules.LibraryModule
 import modules.LibraryType
-import modules.ProjectModules
 
 val module = LibraryModule(rootDir, LibraryType.Android)
 
@@ -13,10 +12,10 @@ plugins {
 }
 
 dependencies {
-    implementation(project(ProjectModules.Shared.DOMAIN))
-    implementation(project(ProjectModules.Shared.NETWORK))
-    implementation(project(ProjectModules.Feature.Data.FACTS))
-    implementation(project(ProjectModules.Feature.Domain.FACTS))
+    implementation(project(JavaModules.SHARED_DOMAIN))
+    implementation(project(JavaModules.SHARED_NETWORK))
+    implementation(project(JavaModules.Features.Domain.FACTS_DOMAIN))
+    implementation(project(JavaModules.Features.Data.FACTS_DATA))
 
     implementation(Libraries.KOTLIN_STDLIB)
 
