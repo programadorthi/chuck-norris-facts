@@ -7,9 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import br.com.programadorthi.chucknorrisfacts.ext.viewModel
 import br.com.programadorthi.domain.Result
 import br.com.programadorthi.facts.R
+import br.com.programadorthi.facts.di.factsModule
 import br.com.programadorthi.facts.ui.viewmodel.SearchFactsViewModel
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -18,15 +19,17 @@ import kotlinx.android.synthetic.main.activity_search_facts.searchFactsCategorie
 import kotlinx.android.synthetic.main.activity_search_facts.searchFactsEditText
 import kotlinx.android.synthetic.main.activity_search_facts.searchFactsLastSearchesChipGroup
 import kotlinx.android.synthetic.main.activity_search_facts.searchFactsLastSearchesTitleTextView
-import org.koin.androidx.scope.currentScope
-import org.koin.androidx.viewmodel.ext.android.getViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.kodein.di.DI
+import org.kodein.di.DIAware
 
-class SearchFactsActivity : AppCompatActivity() {
+class SearchFactsActivity : AppCompatActivity(), DIAware {
 
-    private val searchFactsViewModel: SearchFactsViewModel by lazy {
-        currentScope.getViewModel(this)
+    override val di: DI by DI.lazy {
+        extend((application as DIAware).di)
+        import(factsModule)
     }
+
+    private val searchFactsViewModel: SearchFactsViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

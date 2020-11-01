@@ -37,8 +37,7 @@ dependencies {
 
     implementation(Libraries.RX_JAVA)
 
-    implementation(Libraries.KOIN_SCOPE)
-    implementation(Libraries.KOIN_VIEWMODEL)
+    implementation(Libraries.KODEIN_ANDROID)
 
     implementation(Libraries.RETROFIT)
 

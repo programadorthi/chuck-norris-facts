@@ -12,55 +12,50 @@ import br.com.programadorthi.facts.domain.Fact
 import br.com.programadorthi.facts.domain.FactsRepository
 import br.com.programadorthi.facts.domain.FactsUseCase
 import br.com.programadorthi.facts.domain.FactsUseCaseImpl
-import br.com.programadorthi.facts.ui.FactsActivity
-import br.com.programadorthi.facts.ui.SearchFactsActivity
 import br.com.programadorthi.facts.ui.viewmodel.FactsViewModel
 import br.com.programadorthi.facts.ui.viewmodel.SearchFactsViewModel
 import br.com.programadorthi.network.mapper.RemoteMapper
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.qualifier.named
-import org.koin.dsl.module
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.provider
 import retrofit2.Retrofit
 
-val factsModule = module {
-    factory<FactsUseCase> { FactsUseCaseImpl(factsRepository = get()) }
+val factsModule = DI.Module("factsModule") {
+    bind<FactsUseCase>() with provider { FactsUseCaseImpl(factsRepository = instance()) }
 
-    factory<LocalFactsRepository> { LocalFactsRepositoryImpl(preferencesManager = get()) }
+    bind<LocalFactsRepository>() with provider { LocalFactsRepositoryImpl(preferencesManager = instance()) }
 
-    factory<RemoteMapper<FactsResponseRaw, List<Fact>>> { FactsMapper() }
+    bind<RemoteMapper<FactsResponseRaw, List<Fact>>>() with provider { FactsMapper() }
 
-    factory<RemoteFactsRepository> {
+    bind<RemoteFactsRepository>() with provider {
         RemoteFactsRepositoryImpl(
-            factsMapper = get(),
-            factsService = get(),
-            networkManager = get()
+            factsMapper = instance(),
+            factsService = instance(),
+            networkManager = instance()
         )
     }
 
-    factory { get<Retrofit>().create(FactsService::class.java) }
+    bind<FactsService>() with provider { instance<Retrofit>().create(FactsService::class.java) }
 
-    factory<FactsRepository> {
+    bind<FactsRepository>() with provider {
         FactsRepositoryImpl(
-            localFactsRepository = get(),
-            remoteFactsRepository = get()
+            localFactsRepository = instance(),
+            remoteFactsRepository = instance()
         )
     }
 
-    scope(named<FactsActivity>()) {
-        viewModel {
-            FactsViewModel(
-                scheduler = get(),
-                factsUseCase = get()
-            )
-        }
+    bind<FactsViewModel>() with provider {
+        FactsViewModel(
+            scheduler = instance(),
+            factsUseCase = instance()
+        )
     }
 
-    scope(named<SearchFactsActivity>()) {
-        viewModel {
-            SearchFactsViewModel(
-                scheduler = get(),
-                factsUseCase = get()
-            )
-        }
+    bind<SearchFactsViewModel>() with provider {
+        SearchFactsViewModel(
+            scheduler = instance(),
+            factsUseCase = instance()
+        )
     }
 }

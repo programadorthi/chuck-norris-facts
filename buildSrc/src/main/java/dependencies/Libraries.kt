@@ -16,6 +16,7 @@ object Libraries {
     const val RETROFIT_KOTLIN_SERIALIZATION_CONVERTER = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.RETROFIT_KOTLIN_SERIALIZATION_CONVERTER}"
 
     // Android
+    const val ACTIVITY_KTX = "androidx.activity:activity-ktx:${Versions.ACTIVITY_KTX}"
     const val APP_COMPAT = "androidx.appcompat:appcompat:${Versions.APP_COMPAT}"
     const val CORE_KTX = "androidx.core:core-ktx:${Versions.CORE_KTX}"
     const val CONSTRAINT_LAYOUT = "androidx.constraintlayout:constraintlayout:${Versions.CONSTRAINT_LAYOUT}"
@@ -30,10 +31,8 @@ object Libraries {
     const val MATERIAL_DESIGN = "com.google.android.material:material:${Versions.MATERIAL_DESIGN}"
 
     // Dependency Injection
-    const val KOIN_CORE = "org.koin:koin-core:${Versions.KOIN}"
-    const val KOIN_ANDROID = "org.koin:koin-android:${Versions.KOIN}"
-    const val KOIN_SCOPE = "org.koin:koin-androidx-scope:${Versions.KOIN}"
-    const val KOIN_VIEWMODEL = "org.koin:koin-androidx-viewmodel:${Versions.KOIN}"
+    const val KODEIN_CORE = "org.kodein.di:kodein-di:${Versions.KODEIN}"
+    const val KODEIN_ANDROID = "org.kodein.di:kodein-di-framework-android-x:${Versions.KODEIN}"
 
     // Logger
     const val LOGGER = "com.orhanobut:logger:${Versions.LOGGER}"
@@ -63,6 +62,7 @@ object Libraries {
         const val RETROFIT_RX_JAVA_ADAPTER = "2.6.2"
         const val RETROFIT_KOTLIN_SERIALIZATION_CONVERTER = "0.8.0"
 
+        const val ACTIVITY_KTX = "1.1.0"
         const val APP_COMPAT = "1.1.0"
         const val CORE_KTX = "1.1.0"
         const val CONSTRAINT_LAYOUT = "1.1.3"
@@ -73,7 +73,7 @@ object Libraries {
 
         const val MATERIAL_DESIGN = "1.0.0"
 
-        const val KOIN = "2.0.1"
+        const val KODEIN = "7.1.0"
 
         const val LOGGER = "2.2.0"
         const val TIMBER = "4.7.1"

@@ -13,16 +13,13 @@
     </dist:module>
 
     <application android:theme="@style/AppTheme">
-        <activity
-            android:name=".ui.FactsActivity"
-            android:screenOrientation="portrait">
+        <activity android:name=".ui.FactsActivity">
             <intent-filter>
                 <action android:name="action.facts.open" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.SearchFactsActivity"
-            android:screenOrientation="portrait" />
+            android:name=".ui.SearchFactsActivity" />
     </application>
 </manifest>

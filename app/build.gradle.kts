@@ -96,13 +96,14 @@ dependencies {
 
     implementation(kotlin("stdlib-jdk8"))
 
+    implementation(Libraries.ACTIVITY_KTX)
     implementation(Libraries.APP_COMPAT)
     implementation(Libraries.CORE_KTX)
     implementation(Libraries.CONSTRAINT_LAYOUT)
     implementation(Libraries.PREFERENCE)
     implementation(Libraries.MATERIAL_DESIGN)
 
-    implementation(Libraries.KOIN_ANDROID)
+    implementation(Libraries.KODEIN_ANDROID)
 
     implementation(Libraries.OKHTTP)
     implementation(Libraries.OKHTTP_LOGGER)

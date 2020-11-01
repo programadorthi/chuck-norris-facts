@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import br.com.programadorthi.chucknorrisfacts.ext.viewModel
 import br.com.programadorthi.domain.Result
 import br.com.programadorthi.facts.R
 import br.com.programadorthi.facts.di.factsModule
@@ -15,25 +16,25 @@ import br.com.programadorthi.facts.domain.FactsBusiness
 import br.com.programadorthi.facts.ui.adapter.FactsAdapter
 import br.com.programadorthi.facts.ui.viewmodel.FactsViewModel
 import br.com.programadorthi.network.exception.NetworkingError
-import kotlinx.android.synthetic.main.activity_facts.*
-import org.koin.androidx.scope.currentScope
-import org.koin.androidx.viewmodel.ext.android.getViewModel
-import org.koin.core.context.loadKoinModules
-import org.koin.core.context.unloadKoinModules
+import kotlinx.android.synthetic.main.activity_facts.factsProgressBar
+import kotlinx.android.synthetic.main.activity_facts.factsRecyclerView
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.di
 
-class FactsActivity : AppCompatActivity() {
+class FactsActivity : AppCompatActivity(), DIAware {
 
-    private val factsViewModel: FactsViewModel by lazy {
-        currentScope.getViewModel(this)
+    override val di: DI by DI.lazy {
+        extend((application as DIAware).di)
+        import(factsModule)
     }
 
+    private val factsViewModel: FactsViewModel by viewModel()
     private val factsAdapter = FactsAdapter(::shareFact)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_facts)
-        unloadKoinModules(factsModule)
-        loadKoinModules(factsModule)
 
         factsViewModel.facts.observe(this, { result -> handleFacts(result) })
 
