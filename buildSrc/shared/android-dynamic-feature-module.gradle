@@ -1,0 +1,108 @@
+apply plugin: PluginIds.KOTLIN_ANDROD
+apply plugin: PluginIds.KOTLIN_ANDROID_EXTENSIONS
+apply plugin: PluginIds.TEST_LOGGER
+apply plugin: PluginIds.KTLINT
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+android {
+
+    compileSdkVersion configs.AndroidConfig.COMPILE_SDK_VERSION
+    buildToolsVersion configs.AndroidConfig.BUILD_TOOLS_VERSION
+
+    def currentVersion = Versioning.version
+
+    defaultConfig {
+
+        minSdkVersion configs.AndroidConfig.MIN_SDK_VERSION
+        targetSdkVersion configs.AndroidConfig.TARGET_SDK_VERSION
+
+        versionCode currentVersion.code
+        versionName currentVersion.name
+
+        testInstrumentationRunner configs.AndroidConfig.INSTRUMENTATION_TEST_RUNNER
+
+        vectorDrawables.useSupportLibrary = true
+        vectorDrawables.generatedDensities = configs.AndroidConfig.generatedDensitiesGroovy
+
+        resConfigs configs.AndroidConfig.resConfigsGroovy
+    }
+
+    buildTypes {
+
+        debug {
+            testCoverageEnabled true
+        }
+
+        release {
+            consumerProguardFiles configs.ProguardConfig.CONSUMER_RULES
+            proguardFiles file("$rootDir/proguard").listFiles().toList().toArray()
+            proguardFiles getDefaultProguardFile(configs.ProguardConfig.ANDROID_OPTIMIZE_FILE), configs.ProguardConfig.PROGUARD_RULES
+        }
+
+    }
+
+    flavorDimensions configs.FlavorConfig.DEFAULT_DIMENSION_NAME
+
+    productFlavors {
+
+        create(configs.FlavorConfig.Flavor.DEVELOPMENT) {
+            dimension = configs.FlavorConfig.DEFAULT_DIMENSION_NAME
+        }
+
+        create(configs.FlavorConfig.Flavor.PRODUCTION) {
+            dimension = configs.FlavorConfig.DEFAULT_DIMENSION_NAME
+        }
+
+    }
+
+    compileOptions {
+        sourceCompatibility configs.AndroidConfig.compileOptionsCompatibility
+        targetCompatibility configs.AndroidConfig.compileOptionsCompatibility
+    }
+
+    sourceSets["main"].java.srcDir("src/main/kotlin")
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/main.kotlin_module'
+    }
+
+    lintOptions {
+        quiet true
+        abortOnError false
+        ignoreWarnings true
+        disable 'InvalidPackage'
+        disable 'OldTargetApi'
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
+
+    kotlinOptions{
+        jvmTarget = configs.KotlinConfig.targetJVM
+    }
+}
+
+androidExtensions {
+    experimental = true
+}
+
+ktlint {
+    android = true
+}
+
+testlogger {
+    theme System.getProperty("os.name").toLowerCase().contains('windows') ? 'standard' : 'mocha'
+}

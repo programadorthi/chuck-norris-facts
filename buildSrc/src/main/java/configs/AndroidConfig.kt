@@ -16,6 +16,7 @@ object AndroidConfig {
 
     val compileOptionsCompatibility = JavaVersion.VERSION_1_8
 
+    val dynamicFeatures = mutableSetOf(LibraryModules.FEATURE_FACTS)
     val generatedDensities = emptyArray<String>()
 
     val resConfigs = arrayOf("en")

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
-import br.com.programadorthi.facts.facts.FactsActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -12,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         Handler().postDelayed({
-            startActivity(Intent(this, FactsActivity::class.java))
+            startActivity(Intent("action.facts.open"))
             finish()
         }, DELAY_SIMULATION)
     }

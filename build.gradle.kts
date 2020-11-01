@@ -1,4 +1,3 @@
-import com.vanniktech.android.junit.jacoco.JunitJacocoExtension
 import configs.KotlinConfig
 import io.gitlab.arturbosch.detekt.detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -15,7 +14,7 @@ buildscript {
         classpath(PluginDependencies.KOTLIN_SERIALIZATION)
         classpath(PluginDependencies.KTLINT)
         classpath(PluginDependencies.DETEKT)
-        classpath(PluginDependencies.JACOCO_UNIFIED)
+        //classpath(PluginDependencies.JACOCO_UNIFIED)
         classpath(PluginDependencies.TEST_LOGGER)
     }
 }
@@ -39,10 +38,4 @@ allprojects {
 
 tasks.register("clean").configure {
     delete(rootProject.buildDir)
-}
-
-apply(plugin = PluginIds.JACOCO_UNIFIED)
-
-configure<JunitJacocoExtension> {
-    jacocoVersion = "0.8.4"
 }

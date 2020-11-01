@@ -12,12 +12,13 @@ class LibraryModule(
     private fun target() = when (type) {
         LibraryType.Kotlin -> KOTLIN_MODULE
         LibraryType.Android -> ANDROID_MODULE
-        LibraryType.DynamicFeature -> ANDROID_MODULE
+        LibraryType.DynamicFeature -> ANDROID_DYNAMIC_FEATURE_MODULE
     }
 
     // Why using .gradle instead of .gradle.kts files?
     // https://github.com/gradle/kotlin-dsl-samples/issues/1287#issuecomment-446110725
     private companion object {
+        private const val ANDROID_DYNAMIC_FEATURE_MODULE = "android-dynamic-feature-module.gradle"
         private const val ANDROID_MODULE = "android-module.gradle"
         private const val KOTLIN_MODULE = "kotlin-module.gradle"
     }

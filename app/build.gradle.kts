@@ -34,6 +34,8 @@ android {
         }
 
         resConfigs(*(AndroidConfig.resConfigs))
+
+        dynamicFeatures = AndroidConfig.dynamicFeatures
     }
 
     signingConfigs {
@@ -56,7 +58,6 @@ android {
 
         getByName(FlavorConfig.BuildType.RELEASE) {
             isMinifyEnabled = true
-            isShrinkResources = true
 
             val proguardConfig = ProguardConfig("$rootDir/proguard")
             proguardFiles(*(proguardConfig.customRules))
@@ -92,9 +93,6 @@ android {
 dependencies {
     implementation(project(JavaModules.SHARED_DOMAIN))
     implementation(project(JavaModules.SHARED_NETWORK))
-    implementation(project(JavaModules.Features.Domain.FACTS_DOMAIN))
-    implementation(project(JavaModules.Features.Data.FACTS_DATA))
-    implementation(project(LibraryModules.Features.Ui.FACTS_UI))
 
     implementation(kotlin("stdlib-jdk8"))
 
@@ -102,6 +100,7 @@ dependencies {
     implementation(Libraries.CORE_KTX)
     implementation(Libraries.CONSTRAINT_LAYOUT)
     implementation(Libraries.PREFERENCE)
+    implementation(Libraries.MATERIAL_DESIGN)
 
     implementation(Libraries.KOIN_ANDROID)
 

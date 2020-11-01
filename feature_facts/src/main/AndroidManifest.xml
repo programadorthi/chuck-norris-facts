@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    package="br.com.programadorthi.facts">
+
+    <dist:module
+        dist:instant="false"
+        dist:title="@string/title_feature_facts">
+        <dist:delivery>
+            <dist:install-time />
+        </dist:delivery>
+        <dist:fusing dist:include="true" />
+    </dist:module>
+
+    <application android:theme="@style/AppTheme">
+        <activity
+            android:name=".ui.FactsActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="action.facts.open" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.SearchFactsActivity"
+            android:screenOrientation="portrait" />
+    </application>
+</manifest>
