@@ -3,7 +3,7 @@ package br.com.programadorthi.facts.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import br.com.programadorthi.facts.R
+import br.com.programadorthi.facts.databinding.ItemFactBinding
 import br.com.programadorthi.facts.ui.model.FactViewData
 
 class FactsAdapter(
@@ -16,10 +16,10 @@ class FactsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FactsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.item_fact, parent, false)
+        val view = ItemFactBinding.inflate(inflater)
         val viewHolder = FactsViewHolder(view)
 
-        view.setOnClickListener {
+        view.root.setOnClickListener {
             val item = dataSet[viewHolder.adapterPosition]
             shareAction.invoke(item)
         }

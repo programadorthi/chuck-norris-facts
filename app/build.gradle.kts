@@ -88,6 +88,10 @@ android {
         sourceCompatibility = AndroidConfig.compileOptionsCompatibility
         targetCompatibility = AndroidConfig.compileOptionsCompatibility
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {

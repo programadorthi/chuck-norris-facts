@@ -28,6 +28,5 @@ object PluginIds {
     const val DETEKT = "io.gitlab.arturbosch.detekt"
 
     // Plugins below are used in .gradle files. Don't remove!!!!
-    const val KOTLIN_ANDROID_EXTENSIONS = "kotlin-android-extensions"
     const val TEST_LOGGER = "com.adarshr.test-logger"
 }

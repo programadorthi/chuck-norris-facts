@@ -10,15 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import br.com.programadorthi.chucknorrisfacts.ext.viewModel
 import br.com.programadorthi.domain.Result
 import br.com.programadorthi.facts.R
+import br.com.programadorthi.facts.databinding.ActivitySearchFactsBinding
 import br.com.programadorthi.facts.di.factsModule
 import br.com.programadorthi.facts.ui.viewmodel.SearchFactsViewModel
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import kotlinx.android.synthetic.main.activity_search_facts.searchFactsCategoriesChipGroup
-import kotlinx.android.synthetic.main.activity_search_facts.searchFactsCategoriesTitleTextView
-import kotlinx.android.synthetic.main.activity_search_facts.searchFactsEditText
-import kotlinx.android.synthetic.main.activity_search_facts.searchFactsLastSearchesChipGroup
-import kotlinx.android.synthetic.main.activity_search_facts.searchFactsLastSearchesTitleTextView
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 
@@ -31,9 +27,12 @@ class SearchFactsActivity : AppCompatActivity(), DIAware {
 
     private val searchFactsViewModel: SearchFactsViewModel by viewModel()
 
+    private lateinit var viewBinding: ActivitySearchFactsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search_facts)
+        viewBinding = ActivitySearchFactsBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
 
         searchFactsViewModel.categories.observe(this, { result ->
             handleCategoriesResult(result)
@@ -54,23 +53,23 @@ class SearchFactsActivity : AppCompatActivity(), DIAware {
     private fun handleCategoriesResult(result: Result<List<String>>?) {
         when (result) {
             is Result.Success -> {
-                searchFactsCategoriesTitleTextView.visibility = View.VISIBLE
-                loadChips(result.data, searchFactsCategoriesChipGroup)
+                viewBinding.searchFactsCategoriesTitleTextView.visibility = View.VISIBLE
+                loadChips(result.data, viewBinding.searchFactsCategoriesChipGroup)
             }
             is Result.Error -> {
-                searchFactsCategoriesTitleTextView.visibility = View.INVISIBLE
-                loadChips(emptyList(), searchFactsCategoriesChipGroup)
+                viewBinding.searchFactsCategoriesTitleTextView.visibility = View.INVISIBLE
+                loadChips(emptyList(), viewBinding.searchFactsCategoriesChipGroup)
             }
         }
     }
 
     private fun handleLastSearches(lastSearches: List<String>) {
-        searchFactsLastSearchesTitleTextView.visibility = if (lastSearches.isEmpty()) {
+        viewBinding.searchFactsLastSearchesTitleTextView.visibility = if (lastSearches.isEmpty()) {
             View.INVISIBLE
         } else {
             View.VISIBLE
         }
-        loadChips(lastSearches, searchFactsLastSearchesChipGroup)
+        loadChips(lastSearches, viewBinding.searchFactsLastSearchesChipGroup)
     }
 
     private fun loadChips(items: List<String>, view: ChipGroup) {
@@ -93,7 +92,7 @@ class SearchFactsActivity : AppCompatActivity(), DIAware {
     }
 
     private fun setupSearchEditText() {
-        searchFactsEditText.apply {
+        viewBinding.searchFactsEditText.apply {
             setOnEditorActionListener { view, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     goToFactsList(view.text.toString())

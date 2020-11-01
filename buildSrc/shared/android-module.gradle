@@ -1,5 +1,4 @@
 apply plugin: PluginIds.KOTLIN_ANDROD
-apply plugin: PluginIds.KOTLIN_ANDROID_EXTENSIONS
 apply plugin: PluginIds.TEST_LOGGER
 apply plugin: PluginIds.KTLINT
 
@@ -65,6 +64,10 @@ android {
         targetCompatibility configs.AndroidConfig.compileOptionsCompatibility
     }
 
+    buildFeatures {
+        viewBinding true
+    }
+
     sourceSets["main"].java.srcDir("src/main/kotlin")
 
     packagingOptions {
@@ -94,10 +97,6 @@ android {
     kotlinOptions{
         jvmTarget = configs.KotlinConfig.targetJVM
     }
-}
-
-androidExtensions {
-    experimental = true
 }
 
 ktlint {

@@ -11,16 +11,14 @@ import androidx.appcompat.app.AppCompatActivity
 import br.com.programadorthi.chucknorrisfacts.ext.viewModel
 import br.com.programadorthi.domain.Result
 import br.com.programadorthi.facts.R
+import br.com.programadorthi.facts.databinding.ActivityFactsBinding
 import br.com.programadorthi.facts.di.factsModule
 import br.com.programadorthi.facts.domain.FactsBusiness
 import br.com.programadorthi.facts.ui.adapter.FactsAdapter
 import br.com.programadorthi.facts.ui.viewmodel.FactsViewModel
 import br.com.programadorthi.network.exception.NetworkingError
-import kotlinx.android.synthetic.main.activity_facts.factsProgressBar
-import kotlinx.android.synthetic.main.activity_facts.factsRecyclerView
 import org.kodein.di.DI
 import org.kodein.di.DIAware
-import org.kodein.di.android.di
 
 class FactsActivity : AppCompatActivity(), DIAware {
 
@@ -32,13 +30,16 @@ class FactsActivity : AppCompatActivity(), DIAware {
     private val factsViewModel: FactsViewModel by viewModel()
     private val factsAdapter = FactsAdapter(::shareFact)
 
+    private lateinit var viewBinding: ActivityFactsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_facts)
+        viewBinding = ActivityFactsBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
 
         factsViewModel.facts.observe(this, { result -> handleFacts(result) })
 
-        factsRecyclerView.adapter = factsAdapter
+        viewBinding.factsRecyclerView.adapter = factsAdapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -79,7 +80,7 @@ class FactsActivity : AppCompatActivity(), DIAware {
             }
         }
 
-        factsProgressBar.visibility = if (result is Result.Loading) {
+        viewBinding.factsProgressBar.visibility = if (result is Result.Loading) {
             View.VISIBLE
         } else {
             View.GONE
