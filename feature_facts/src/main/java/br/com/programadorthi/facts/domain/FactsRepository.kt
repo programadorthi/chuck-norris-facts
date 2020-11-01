@@ -1,12 +1,9 @@
 package br.com.programadorthi.facts.domain
 
-import io.reactivex.Single
+import br.com.programadorthi.domain.Result
 
 interface FactsRepository {
-
-    fun fetchCategories(limit: Int, shuffle: Boolean): Single<List<String>>
-
-    fun getLastSearches(): Single<List<String>>
-
-    fun doSearch(text: String): Single<List<Fact>>
+    suspend fun fetchCategories(limit: Int, shuffle: Boolean): Result<List<String>>
+    suspend fun getLastSearches(): Result<List<String>>
+    suspend fun doSearch(text: String): Result<List<Fact>>
 }

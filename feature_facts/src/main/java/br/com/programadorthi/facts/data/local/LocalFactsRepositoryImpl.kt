@@ -1,46 +1,46 @@
 package br.com.programadorthi.facts.data.local
 
 import br.com.programadorthi.domain.persist.PreferencesManager
-import io.reactivex.Single
-import kotlinx.serialization.json.Json
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
 
-class LocalFactsRepositoryImpl(
-    private val preferencesManager: PreferencesManager
+internal class LocalFactsRepositoryImpl(
+    private val preferencesManager: PreferencesManager,
+    private val ioDispatcher: CoroutineDispatcher
 ) : LocalFactsRepository {
 
-    override fun getCategories(): Single<List<String>> {
-        return Single.just(getList(CATEGORIES_KEY))
-    }
+    override suspend fun getCategories(): List<String> = getList(CATEGORIES_KEY)
 
-    override fun getLastSearches(): Single<List<String>> {
-        return Single.just(getList(LAST_SEARCHES_KEY))
-            .map { lastSearches -> lastSearches.asReversed() }
-    }
+    override suspend fun getLastSearches(): List<String> =
+        getList(LAST_SEARCHES_KEY).asReversed()
 
-    override fun saveCategories(categories: List<String>) {
+    override suspend fun saveCategories(categories: List<String>) {
         saveList(CATEGORIES_KEY, categories)
     }
 
-    override fun saveNewSearch(text: String) {
+    override suspend fun saveNewSearch(text: String) {
         val lastSearches = getList(LAST_SEARCHES_KEY).toSet()
         val withNewTerm = lastSearches + text
         saveList(LAST_SEARCHES_KEY, withNewTerm.toList())
     }
 
-    private fun getList(key: String): List<String> {
-        val json = preferencesManager.getItem(key)
-        if (json.isBlank()) {
-            return emptyList()
+    private suspend fun getList(key: String): List<String> =
+        withContext(ioDispatcher) {
+            val json = preferencesManager.getItem(key)
+            when {
+                json.isBlank() -> emptyList()
+                else -> jsonParse.decodeFromString(ListSerializer(String.serializer()), json)
+            }
         }
-        return jsonParse.decodeFromString(ListSerializer(String.serializer()), json)
-    }
 
-    private fun saveList(key: String, items: List<String>) {
-        val json = jsonParse.encodeToString(ListSerializer(String.serializer()), items)
-        preferencesManager.putItem(key, json)
-    }
+    private suspend fun saveList(key: String, items: List<String>) =
+        withContext(ioDispatcher) {
+            val json = jsonParse.encodeToString(ListSerializer(String.serializer()), items)
+            preferencesManager.putItem(key, json)
+        }
 
     private companion object {
         private const val CATEGORIES_KEY = "categories"

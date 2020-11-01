@@ -1,15 +1,13 @@
 package br.com.programadorthi.facts.data.remote
 
 import br.com.programadorthi.facts.data.remote.raw.FactsResponseRaw
-import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface FactsService {
-
     @GET("categories")
-    fun fetchCategories(): Single<List<String>>
+    suspend fun fetchCategories(): List<String>
 
     @GET("search")
-    fun search(@Query("query") query: String): Single<FactsResponseRaw>
+    suspend fun search(@Query("query") query: String): FactsResponseRaw
 }

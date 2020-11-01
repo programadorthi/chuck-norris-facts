@@ -1,5 +1,7 @@
 package br.com.programadorthi.facts.domain
 
-sealed class FactsBusiness : Exception() {
+import br.com.programadorthi.domain.ResultTypes
+
+sealed class FactsBusiness : ResultTypes.Business() {
     object EmptySearch : FactsBusiness()
 }

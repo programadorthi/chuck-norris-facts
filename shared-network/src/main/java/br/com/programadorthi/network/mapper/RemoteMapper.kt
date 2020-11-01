@@ -2,7 +2,8 @@ package br.com.programadorthi.network.mapper
 
 import br.com.programadorthi.network.exception.NetworkingError
 import br.com.programadorthi.network.exception.NetworkingError.EssentialParamMissing
-import io.reactivex.functions.Function
+
+typealias Mapper<From, To> = (From) -> To
 
 /**
  * Base map used for inheritance to map network response in feature model
@@ -10,8 +11,7 @@ import io.reactivex.functions.Function
  * @param Raw The data returned from server
  * @param Model The feature model created from Raw
  */
-abstract class RemoteMapper<Raw, Model> : Function<Raw, Model> {
-
+abstract class RemoteMapper<Raw, Model> : Mapper<Raw, Model> {
     /**
      * Mapper the raw to feature model
      *
@@ -20,7 +20,7 @@ abstract class RemoteMapper<Raw, Model> : Function<Raw, Model> {
      * @throws NetworkingError When the server response is not valid
      */
     @Throws(NetworkingError::class)
-    override fun apply(from: Raw): Model {
+    override fun invoke(from: Raw): Model {
         assertEssentialParams(from)
         return copyValuesAfterEssentialParamsChecked(from)
     }

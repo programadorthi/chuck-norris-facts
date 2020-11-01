@@ -1,49 +1,55 @@
 package br.com.programadorthi.facts.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import br.com.programadorthi.domain.Result
+import br.com.programadorthi.domain.ResultTypes
+import br.com.programadorthi.domain.exceptionOrNull
+import br.com.programadorthi.domain.getOrDefault
 import br.com.programadorthi.facts.domain.FactsUseCase
-import io.reactivex.Scheduler
-import io.reactivex.disposables.CompositeDisposable
+import br.com.programadorthi.facts.ui.UIState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class SearchFactsViewModel(
-    private val scheduler: Scheduler,
-    private val factsUseCase: FactsUseCase
-) : ViewModel() {
+    private val factsUseCase: FactsUseCase,
+    private val ioScope: CoroutineScope
+) : ViewModel(), CoroutineScope by ioScope {
 
-    private val mutableCategories = MutableLiveData<Result<List<String>>>()
-    val categories: LiveData<Result<List<String>>>
+    private val mutableCategories = MutableStateFlow<UIState<List<String>>>(UIState.Idle)
+    val categories: StateFlow<UIState<List<String>>>
         get() = mutableCategories
 
-    private val mutableLastSearches = MutableLiveData<List<String>>()
-    val lastSearches: LiveData<List<String>>
+    private val mutableLastSearches = MutableStateFlow<UIState<List<String>>>(UIState.Idle)
+    val lastSearches: StateFlow<UIState<List<String>>>
         get() = mutableLastSearches
 
-    private val compositeDisposable = CompositeDisposable()
-
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
-    }
-
     fun fetchCategories() {
-        val disposable = factsUseCase
-            .categories(limit = MAX_VISIBLE_CATEGORIES, shuffle = true)
-            .subscribeOn(scheduler)
-            .map<Result<List<String>>> { cats -> Result.Success(cats) }
-            .onErrorReturn { err -> Result.Error(err) }
-            .subscribe(mutableCategories::postValue)
-        compositeDisposable.add(disposable)
+        launch {
+            when (val result =
+                factsUseCase.categories(limit = MAX_VISIBLE_CATEGORIES, shuffle = true)) {
+                is ResultTypes.Business -> mutableCategories.emit(UIState.Failed(result.exceptionOrNull()))
+                is ResultTypes.Error -> mutableCategories.emit(UIState.Failed(result.exceptionOrNull()))
+                else -> {
+                    result
+                        .getOrDefault(emptyList())
+                        .let { categories -> mutableCategories.emit(UIState.Success(categories)) }
+                }
+            }
+        }
     }
 
     fun fetchLastSearches() {
-        val disposable = factsUseCase
-            .lastSearches()
-            .subscribeOn(scheduler)
-            .subscribe(mutableLastSearches::postValue)
-        compositeDisposable.add(disposable)
+        launch {
+            when (val result = factsUseCase.lastSearches()) {
+                is ResultTypes.Error -> mutableCategories.emit(UIState.Failed(result.exceptionOrNull()))
+                else -> {
+                    result
+                        .getOrDefault(emptyList())
+                        .let { searches -> mutableLastSearches.emit(UIState.Success(searches)) }
+                }
+            }
+        }
     }
 
     private companion object {

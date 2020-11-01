@@ -6,10 +6,12 @@ import androidx.preference.PreferenceManager
 import br.com.programadorthi.chucknorrisfacts.factory.ViewModelFactory
 import br.com.programadorthi.chucknorrisfacts.preferences.PreferencesManagerImpl
 import br.com.programadorthi.chucknorrisfacts.report.CrashReportImpl
+import br.com.programadorthi.domain.InjectionTags
 import br.com.programadorthi.domain.persist.PreferencesManager
 import br.com.programadorthi.domain.report.CrashReport
-import io.reactivex.Scheduler
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.instance
@@ -23,7 +25,10 @@ val applicationModule = DI.Module("applicationModule") {
         )
     }
     bind<CrashReport>() with singleton { CrashReportImpl() }
-    bind<Scheduler>() with singleton { Schedulers.io() }
     bind<PreferencesManager>() with singleton { PreferencesManagerImpl(instance()) }
     bind<ViewModelProvider.Factory>() with provider { ViewModelFactory(di) }
+    bind<CoroutineDispatcher>(InjectionTags.IO_DISPATCHER) with singleton { Dispatchers.IO }
+    bind<CoroutineScope>(InjectionTags.IO_SCOPE) with singleton {
+        CoroutineScope(instance(InjectionTags.IO_DISPATCHER))
+    }
 }

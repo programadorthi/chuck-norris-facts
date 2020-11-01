@@ -113,7 +113,7 @@ dependencies {
     implementation(Libraries.OKHTTP_LOGGER)
     implementation(Libraries.RETROFIT)
 
-    implementation(Libraries.RX_JAVA)
+    implementation(Libraries.KOTLIN_COROUTINES)
 
     implementation(Libraries.LOGGER)
     implementation(Libraries.TIMBER)

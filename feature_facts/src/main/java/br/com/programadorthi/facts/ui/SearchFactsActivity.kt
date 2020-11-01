@@ -7,14 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import br.com.programadorthi.chucknorrisfacts.ext.viewModel
-import br.com.programadorthi.domain.Result
 import br.com.programadorthi.facts.R
 import br.com.programadorthi.facts.databinding.ActivitySearchFactsBinding
 import br.com.programadorthi.facts.di.factsModule
 import br.com.programadorthi.facts.ui.viewmodel.SearchFactsViewModel
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import kotlinx.coroutines.flow.collect
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 
@@ -34,13 +36,10 @@ class SearchFactsActivity : AppCompatActivity(), DIAware {
         viewBinding = ActivitySearchFactsBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        searchFactsViewModel.categories.observe(this, { result ->
-            handleCategoriesResult(result)
-        })
-
-        searchFactsViewModel.lastSearches.observe(this, { lastSearches ->
-            handleLastSearches(lastSearches)
-        })
+        lifecycleScope.launchWhenCreated {
+            searchFactsViewModel.categories.collect(::handleCategoriesResult)
+            searchFactsViewModel.lastSearches.collect(::handleLastSearches)
+        }
 
         setupSearchEditText()
 
@@ -50,26 +49,25 @@ class SearchFactsActivity : AppCompatActivity(), DIAware {
         }
     }
 
-    private fun handleCategoriesResult(result: Result<List<String>>?) {
+    private fun handleCategoriesResult(result: UIState<List<String>>) {
         when (result) {
-            is Result.Success -> {
+            is UIState.Success -> {
                 viewBinding.searchFactsCategoriesTitleTextView.visibility = View.VISIBLE
                 loadChips(result.data, viewBinding.searchFactsCategoriesChipGroup)
             }
-            is Result.Error -> {
+            is UIState.Failed -> {
                 viewBinding.searchFactsCategoriesTitleTextView.visibility = View.INVISIBLE
                 loadChips(emptyList(), viewBinding.searchFactsCategoriesChipGroup)
             }
+            else -> Unit
         }
     }
 
-    private fun handleLastSearches(lastSearches: List<String>) {
-        viewBinding.searchFactsLastSearchesTitleTextView.visibility = if (lastSearches.isEmpty()) {
-            View.INVISIBLE
-        } else {
-            View.VISIBLE
+    private fun handleLastSearches(result: UIState<List<String>>) {
+        if (result is UIState.Success) {
+            loadChips(result.data, viewBinding.searchFactsLastSearchesChipGroup)
         }
-        loadChips(lastSearches, viewBinding.searchFactsLastSearchesChipGroup)
+        viewBinding.searchFactsLastSearchesTitleTextView.isVisible = result is UIState.Success
     }
 
     private fun loadChips(items: List<String>, view: ChipGroup) {

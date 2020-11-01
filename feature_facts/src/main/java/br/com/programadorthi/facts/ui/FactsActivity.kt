@@ -5,18 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import br.com.programadorthi.chucknorrisfacts.ext.viewModel
-import br.com.programadorthi.domain.Result
 import br.com.programadorthi.facts.R
 import br.com.programadorthi.facts.databinding.ActivityFactsBinding
 import br.com.programadorthi.facts.di.factsModule
-import br.com.programadorthi.facts.domain.FactsBusiness
 import br.com.programadorthi.facts.ui.adapter.FactsAdapter
+import br.com.programadorthi.facts.ui.model.FactViewData
 import br.com.programadorthi.facts.ui.viewmodel.FactsViewModel
 import br.com.programadorthi.network.exception.NetworkingError
+import kotlinx.coroutines.flow.collect
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 
@@ -37,7 +38,9 @@ class FactsActivity : AppCompatActivity(), DIAware {
         viewBinding = ActivityFactsBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        factsViewModel.facts.observe(this, { result -> handleFacts(result) })
+        lifecycleScope.launchWhenCreated {
+            factsViewModel.facts.collect(::handleFacts)
+        }
 
         viewBinding.factsRecyclerView.adapter = factsAdapter
     }
@@ -64,10 +67,10 @@ class FactsActivity : AppCompatActivity(), DIAware {
         }
     }
 
-    private fun handleFacts(result: Result<List<br.com.programadorthi.facts.ui.model.FactViewData>>) {
+    private fun handleFacts(result: UIState<List<FactViewData>>) {
         when (result) {
-            is Result.Error -> handleSearchError(result.cause)
-            is Result.Success -> {
+            is UIState.Failed -> handleSearchError(result.cause!!)
+            is UIState.Success -> {
                 if (result.data.isEmpty()) {
                     Toast.makeText(
                         this,
@@ -78,18 +81,16 @@ class FactsActivity : AppCompatActivity(), DIAware {
                     factsAdapter.changeData(result.data)
                 }
             }
+            else -> Unit
         }
 
-        viewBinding.factsProgressBar.visibility = if (result is Result.Loading) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
+        viewBinding.factsProgressBar.isVisible = result is UIState.Loading
     }
 
     private fun handleSearchError(cause: Throwable) {
         val messageId = when (cause) {
-            is FactsBusiness.EmptySearch -> R.string.activity_facts_empty_search_term
+            // FIXME: handle business
+            //is FactsBusiness.EmptySearch -> R.string.activity_facts_empty_search_term
             is NetworkingError.NoInternetConnection ->
                 R.string.activity_facts_no_internet_connection
             else -> R.string.activity_facts_something_wrong
@@ -97,7 +98,7 @@ class FactsActivity : AppCompatActivity(), DIAware {
         Toast.makeText(this, messageId, Toast.LENGTH_LONG).show()
     }
 
-    private fun shareFact(factViewData: br.com.programadorthi.facts.ui.model.FactViewData) {
+    private fun shareFact(factViewData: FactViewData) {
         val shareFactIntent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, factViewData.url)

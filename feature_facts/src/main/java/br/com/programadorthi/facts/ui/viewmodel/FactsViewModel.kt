@@ -1,48 +1,45 @@
 package br.com.programadorthi.facts.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import br.com.programadorthi.domain.Result
+import br.com.programadorthi.domain.ResultTypes
+import br.com.programadorthi.domain.exceptionOrNull
+import br.com.programadorthi.domain.getOrDefault
 import br.com.programadorthi.facts.domain.FactsUseCase
+import br.com.programadorthi.facts.ui.UIState
 import br.com.programadorthi.facts.ui.model.FactViewData
-import io.reactivex.Scheduler
-import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class FactsViewModel(
-    private val scheduler: Scheduler,
-    private val factsUseCase: FactsUseCase
-) : ViewModel() {
+    private val factsUseCase: FactsUseCase,
+    private val ioScope: CoroutineScope
+) : ViewModel(), CoroutineScope by ioScope {
 
-    private val mutableFacts = MutableLiveData<Result<List<FactViewData>>>()
-    val facts: LiveData<Result<List<FactViewData>>>
+    private val mutableFacts = MutableStateFlow<UIState<List<FactViewData>>>(UIState.Idle)
+    val facts: StateFlow<UIState<List<FactViewData>>>
         get() = mutableFacts
 
-    private val compositeDisposable = CompositeDisposable()
-
-    override fun onCleared() {
-        compositeDisposable.clear()
-        super.onCleared()
-    }
-
     fun search(text: String) {
-        val disposable = factsUseCase.search(text)
-            .subscribeOn(scheduler)
-            .doOnSubscribe { mutableFacts.postValue(Result.Loading) }
-            .toObservable()
-            .flatMapIterable { items -> items }
-            .map { fact ->
-                FactViewData(
-                    category = fact.categories.firstOrNull() ?: "",
-                    url = fact.url,
-                    value = fact.value
-                )
+        launch {
+            mutableFacts.emit(UIState.Loading)
+            when (val result = factsUseCase.search(text)) {
+                is ResultTypes.Business -> mutableFacts.emit(UIState.Failed(result.exceptionOrNull()))
+                is ResultTypes.Error -> mutableFacts.emit(UIState.Failed(result.exceptionOrNull()))
+                else -> {
+                    result
+                        .getOrDefault(emptyList())
+                        .map { fact ->
+                            FactViewData(
+                                category = fact.categories.firstOrNull() ?: "",
+                                url = fact.url,
+                                value = fact.value
+                            )
+                        }
+                        .let { facts -> mutableFacts.emit(UIState.Success(facts)) }
+                }
             }
-            .toList()
-            .map<Result<List<FactViewData>>> { items -> Result.Success(items) }
-            .onErrorReturn { err -> Result.Error(err) }
-            .subscribe(mutableFacts::postValue)
-
-        compositeDisposable.add(disposable)
+        }
     }
 }

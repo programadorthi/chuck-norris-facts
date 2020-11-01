@@ -1,15 +1,18 @@
 package br.com.programadorthi.network.exception
 
 import br.com.programadorthi.domain.report.CrashReport
-import io.reactivex.functions.Function
-import kotlinx.serialization.SerializationException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import kotlinx.serialization.SerializationException
 
-class NetworkingErrorMapper(
+interface NetworkingErrorMapper {
+    fun mapper(cause: Throwable): NetworkingError
+}
+
+internal class NetworkingErrorMapperImpl(
     private val crashReport: CrashReport
-) : Function<Throwable, NetworkingError> {
-    override fun apply(cause: Throwable): NetworkingError {
+) : NetworkingErrorMapper {
+    override fun mapper(cause: Throwable): NetworkingError {
         val error = when (cause) {
             is NetworkingError.EssentialParamMissing -> cause
             is SerializationException -> NetworkingError.InvalidDataFormat

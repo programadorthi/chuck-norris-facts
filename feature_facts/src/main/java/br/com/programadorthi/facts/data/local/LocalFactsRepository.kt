@@ -1,14 +1,8 @@
 package br.com.programadorthi.facts.data.local
 
-import io.reactivex.Single
-
-interface LocalFactsRepository {
-
-    fun getCategories(): Single<List<String>>
-
-    fun getLastSearches(): Single<List<String>>
-
-    fun saveCategories(categories: List<String>)
-
-    fun saveNewSearch(text: String)
+internal interface LocalFactsRepository {
+    suspend fun getCategories(): List<String>
+    suspend fun getLastSearches(): List<String>
+    suspend fun saveCategories(categories: List<String>)
+    suspend fun saveNewSearch(text: String)
 }

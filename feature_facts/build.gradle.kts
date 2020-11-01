@@ -25,17 +25,17 @@ dependencies {
 
     implementation(kotlin("stdlib-jdk8"))
     implementation(Libraries.KOTLIN_SERIALIZATION)
+    implementation(Libraries.KOTLIN_COROUTINES)
 
     implementation(Libraries.APP_COMPAT)
     implementation(Libraries.CONSTRAINT_LAYOUT)
+    implementation(Libraries.CORE_KTX)
     implementation(Libraries.RECYCLER_VIEW)
 
-    implementation(Libraries.LIVEDATA)
-    implementation(Libraries.VIEWMODEL)
+    implementation(Libraries.LIFECYCLE_RUNTIME)
+    implementation(Libraries.LIFECYCLE_VIEWMODEL)
 
     implementation(Libraries.MATERIAL_DESIGN)
-
-    implementation(Libraries.RX_JAVA)
 
     implementation(Libraries.KODEIN_ANDROID)
 

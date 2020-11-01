@@ -4,15 +4,13 @@ object Libraries {
 
     // Kotlin serialization
     const val KOTLIN_SERIALIZATION = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.KOTLIN_SERIALIZATION}"
-
-    // RxJava
-    const val RX_JAVA = "io.reactivex.rxjava2:rxjava:${Versions.RX_JAVA}"
+    // Kotlin Coroutines
+    const val KOTLIN_COROUTINES = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.KOTLIN_COROUTINES}"
 
     // OKHttp and Retrofit
     const val OKHTTP = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP}"
     const val OKHTTP_LOGGER = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
     const val RETROFIT = "com.squareup.retrofit2:retrofit:${Versions.RETROFIT}"
-    const val RETROFIT_RX_JAVA_ADAPTER = "com.squareup.retrofit2:adapter-rxjava2:${Versions.RETROFIT_RX_JAVA_ADAPTER}"
     const val RETROFIT_KOTLIN_SERIALIZATION_CONVERTER = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.RETROFIT_KOTLIN_SERIALIZATION_CONVERTER}"
 
     // Android
@@ -24,8 +22,8 @@ object Libraries {
     const val RECYCLER_VIEW = "androidx.recyclerview:recyclerview:${Versions.RECYCLER_VIEW}"
 
     // Lifecycle
-    const val LIVEDATA = "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.LIFECYCLE}"
-    const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.LIFECYCLE}"
+    const val LIFECYCLE_RUNTIME = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.LIFECYCLE}"
+    const val LIFECYCLE_VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.LIFECYCLE}"
 
     // Material Design
     const val MATERIAL_DESIGN = "com.google.android.material:material:${Versions.MATERIAL_DESIGN}"
@@ -54,12 +52,10 @@ object Libraries {
 
     private object Versions {
         const val KOTLIN_SERIALIZATION = "1.0.1"
-
-        const val RX_JAVA = "2.2.13"
+        const val KOTLIN_COROUTINES = "1.4.0"
 
         const val OKHTTP = "4.2.0"
         const val RETROFIT = "2.6.2"
-        const val RETROFIT_RX_JAVA_ADAPTER = "2.6.2"
         const val RETROFIT_KOTLIN_SERIALIZATION_CONVERTER = "0.8.0"
 
         const val ACTIVITY_KTX = "1.1.0"
@@ -69,7 +65,7 @@ object Libraries {
         const val PREFERENCE = "1.1.0"
         const val RECYCLER_VIEW = "1.0.0"
 
-        const val LIFECYCLE = "2.1.0"
+        const val LIFECYCLE = "2.2.0"
 
         const val MATERIAL_DESIGN = "1.0.0"
 

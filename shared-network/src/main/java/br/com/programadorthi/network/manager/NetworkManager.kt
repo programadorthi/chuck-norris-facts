@@ -1,14 +1,10 @@
 package br.com.programadorthi.network.manager
 
-import io.reactivex.Completable
-import io.reactivex.Single
-import io.reactivex.functions.Function
-
 interface NetworkManager {
-    fun performAndDone(request: Completable): Completable
-    fun <Data> performAndReturnsData(request: Single<Data>): Single<Data>
-    fun <From, To> performAndReturnsMappedData(
-        mapper: Function<From, To>,
-        request: Single<From>
-    ): Single<To>
+    suspend fun performAndDone(request: suspend () -> Unit)
+    suspend fun <Data> performAndReturnsData(request: suspend () -> Data): Data
+    suspend fun <From, To> performAndReturnsMappedData(
+        mapper: (From) -> To,
+        request: suspend () -> From
+    ): To
 }

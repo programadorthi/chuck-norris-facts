@@ -1,12 +1,9 @@
 package br.com.programadorthi.facts.domain
 
-import io.reactivex.Single
+import br.com.programadorthi.domain.Result
 
 interface FactsUseCase {
-
-    fun categories(limit: Int, shuffle: Boolean): Single<List<String>>
-
-    fun lastSearches(): Single<List<String>>
-
-    fun search(text: String): Single<List<Fact>>
+    suspend fun categories(limit: Int, shuffle: Boolean): Result<List<String>>
+    suspend fun lastSearches(): Result<List<String>>
+    suspend fun search(text: String): Result<List<Fact>>
 }

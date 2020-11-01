@@ -1,11 +1,8 @@
 package br.com.programadorthi.facts.data.remote.repository
 
 import br.com.programadorthi.facts.domain.Fact
-import io.reactivex.Single
 
-interface RemoteFactsRepository {
-
-    fun fetchCategories(): Single<List<String>>
-
-    fun search(text: String): Single<List<Fact>>
+internal interface RemoteFactsRepository {
+    suspend fun fetchCategories(): List<String>
+    suspend fun search(text: String): List<Fact>
 }

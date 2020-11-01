@@ -16,13 +16,13 @@ dependencies {
 
     implementation(kotlin("stdlib-jdk8"))
     implementation(Libraries.KOTLIN_SERIALIZATION)
+    implementation(Libraries.KOTLIN_COROUTINES)
 
-    implementation(Libraries.RX_JAVA)
+    implementation(Libraries.KODEIN_CORE)
 
     implementation(Libraries.OKHTTP)
     implementation(Libraries.RETROFIT)
     implementation(Libraries.RETROFIT_KOTLIN_SERIALIZATION_CONVERTER)
-    implementation(Libraries.RETROFIT_RX_JAVA_ADAPTER)
 
     unitTest {
         forEachDependency { testImplementation(it) }

@@ -1,5 +1,6 @@
 package br.com.programadorthi.facts.di
 
+import br.com.programadorthi.domain.InjectionTags
 import br.com.programadorthi.facts.data.FactsRepositoryImpl
 import br.com.programadorthi.facts.data.local.LocalFactsRepository
 import br.com.programadorthi.facts.data.local.LocalFactsRepositoryImpl
@@ -24,7 +25,12 @@ import retrofit2.Retrofit
 val factsModule = DI.Module("factsModule") {
     bind<FactsUseCase>() with provider { FactsUseCaseImpl(factsRepository = instance()) }
 
-    bind<LocalFactsRepository>() with provider { LocalFactsRepositoryImpl(preferencesManager = instance()) }
+    bind<LocalFactsRepository>() with provider {
+        LocalFactsRepositoryImpl(
+            preferencesManager = instance(),
+            ioDispatcher = instance(InjectionTags.IO_DISPATCHER)
+        )
+    }
 
     bind<RemoteMapper<FactsResponseRaw, List<Fact>>>() with provider { FactsMapper() }
 
@@ -47,15 +53,15 @@ val factsModule = DI.Module("factsModule") {
 
     bind<FactsViewModel>() with provider {
         FactsViewModel(
-            scheduler = instance(),
-            factsUseCase = instance()
+            factsUseCase = instance(),
+            ioScope = instance(InjectionTags.IO_SCOPE)
         )
     }
 
     bind<SearchFactsViewModel>() with provider {
         SearchFactsViewModel(
-            scheduler = instance(),
-            factsUseCase = instance()
+            factsUseCase = instance(),
+            ioScope = instance(InjectionTags.IO_SCOPE)
         )
     }
 }
