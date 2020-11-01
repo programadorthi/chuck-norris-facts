@@ -1,8 +1,9 @@
 package br.com.programadorthi.facts.data
 
-import br.com.programadorthi.facts.remote.mapper.FactsMapper
-import br.com.programadorthi.facts.remote.raw.FactRaw
-import br.com.programadorthi.facts.remote.raw.FactsResponseRaw
+import br.com.programadorthi.facts.data.remote.mapper.FactsMapper
+import br.com.programadorthi.facts.data.remote.raw.FactRaw
+import br.com.programadorthi.facts.data.remote.raw.FactsResponseRaw
+import br.com.programadorthi.facts.domain.Fact
 import br.com.programadorthi.network.exception.NetworkingError.EssentialParamMissing
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -19,7 +20,7 @@ class FactsMapperTest {
         val expectedMessage = "The $response has missing parameters. They are: $missingParams"
 
         assertThatExceptionOfType(EssentialParamMissing::class.java)
-            .isThrownBy { factsMapper.apply(response) }
+            .isThrownBy { factsMapper(response) }
             .withMessage(expectedMessage)
     }
 
@@ -38,7 +39,7 @@ class FactsMapperTest {
         val expectedMessage = "The $response has missing parameters. They are: $missingParams"
 
         assertThatExceptionOfType(EssentialParamMissing::class.java)
-            .isThrownBy { factsMapper.apply(response) }
+            .isThrownBy { factsMapper(response) }
             .withMessage(expectedMessage)
     }
 
@@ -57,7 +58,7 @@ class FactsMapperTest {
         val expectedMessage = "The $response has missing parameters. They are: $missingParams"
 
         assertThatExceptionOfType(EssentialParamMissing::class.java)
-            .isThrownBy { factsMapper.apply(response) }
+            .isThrownBy { factsMapper(response) }
             .withMessage(expectedMessage)
     }
 
@@ -76,7 +77,7 @@ class FactsMapperTest {
         val expectedMessage = "The $response has missing parameters. They are: $missingParams"
 
         assertThatExceptionOfType(EssentialParamMissing::class.java)
-            .isThrownBy { factsMapper.apply(response) }
+            .isThrownBy { factsMapper(response) }
             .withMessage(expectedMessage)
     }
 
@@ -85,7 +86,7 @@ class FactsMapperTest {
         val response = FactsResponseRaw(
             result = emptyList()
         )
-        val result = factsMapper.apply(response)
+        val result = factsMapper(response)
         assertThat(result).isEqualTo(emptyList<Fact>())
     }
 
@@ -110,7 +111,7 @@ class FactsMapperTest {
             )
         )
 
-        val result = factsMapper.apply(response)
+        val result = factsMapper(response)
 
         assertThat(result).isEqualTo(expected)
     }

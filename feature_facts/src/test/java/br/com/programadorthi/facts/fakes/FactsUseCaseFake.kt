@@ -1,8 +1,9 @@
 package br.com.programadorthi.facts.fakes
 
+import br.com.programadorthi.domain.Result
+import br.com.programadorthi.domain.ResultTypes
 import br.com.programadorthi.facts.domain.Fact
 import br.com.programadorthi.facts.domain.FactsUseCase
-import io.reactivex.Single
 
 class FactsUseCaseFake(
     var categories: List<String> = emptyList(),
@@ -11,25 +12,24 @@ class FactsUseCaseFake(
     var categoriesException: Throwable? = null,
     var searchException: Throwable? = null
 ) : FactsUseCase {
-    override fun categories(limit: Int, shuffle: Boolean): Single<List<String>> {
+    override suspend fun categories(limit: Int, shuffle: Boolean): Result<List<String>> {
         if (categoriesException != null) {
-            return Single.error(categoriesException)
+            return ResultTypes.Error(categoriesException!!)
         }
         val result = when {
             limit <= 0 -> emptyList()
             limit > categories.size -> categories
             else -> categories.slice(IntRange(0, limit - 1))
         }
-        return Single.just(result)
+        return ResultTypes.Success(result)
     }
 
-    override fun lastSearches(): Single<List<String>> =
-        Single.just(lastSearches)
+    override suspend fun lastSearches(): Result<List<String>> = ResultTypes.Success(lastSearches)
 
-    override fun search(text: String): Single<List<Fact>> {
+    override suspend fun search(text: String): Result<List<Fact>> {
         if (searchException != null) {
-            return Single.error(searchException)
+            return ResultTypes.Error(searchException!!)
         }
-        return Single.just(searchResult)
+        return ResultTypes.Success(searchResult)
     }
 }

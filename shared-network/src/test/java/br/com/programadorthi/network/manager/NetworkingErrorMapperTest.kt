@@ -2,14 +2,15 @@ package br.com.programadorthi.network.manager
 
 import br.com.programadorthi.network.exception.NetworkingError
 import br.com.programadorthi.network.exception.NetworkingErrorMapper
+import br.com.programadorthi.network.exception.NetworkingErrorMapperImpl
 import br.com.programadorthi.network.fake.CrashReportFake
+import java.io.IOException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import kotlinx.serialization.SerializationException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
-import java.io.IOException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 
 class NetworkingErrorMapperTest {
 
@@ -21,14 +22,14 @@ class NetworkingErrorMapperTest {
     fun `before each test`() {
         crashReportFake = CrashReportFake()
 
-        networkingErrorMapper = NetworkingErrorMapper(crashReportFake)
+        networkingErrorMapper = NetworkingErrorMapperImpl(crashReportFake)
     }
 
     @Test
     fun `should throw EssentialParamMissing when throwable is an EssentialParamMissing`() {
         val expected = NetworkingError.EssentialParamMissing("", 1)
 
-        val exception = networkingErrorMapper.apply(expected)
+        val exception = networkingErrorMapper.mapper(expected)
 
         assertThat(exception).isEqualTo(expected)
     }
@@ -37,7 +38,7 @@ class NetworkingErrorMapperTest {
     fun `should throw InvalidDataFormat when throwable is a SerializationException`() {
         val expected = NetworkingError.InvalidDataFormat
 
-        val exception = networkingErrorMapper.apply(SerializationException("field"))
+        val exception = networkingErrorMapper.mapper(SerializationException("field"))
 
         assertThat(exception).isEqualTo(expected)
     }
@@ -46,7 +47,7 @@ class NetworkingErrorMapperTest {
     fun `should throw ConnectionTimeout when throwable is a SocketTimeoutException`() {
         val expected = NetworkingError.ConnectionTimeout
 
-        val exception = networkingErrorMapper.apply(SocketTimeoutException("field"))
+        val exception = networkingErrorMapper.mapper(SocketTimeoutException("field"))
 
         assertThat(exception).isEqualTo(expected)
     }
@@ -55,7 +56,7 @@ class NetworkingErrorMapperTest {
     fun `should throw UnknownEndpoint when throwable is an UnknownHostException`() {
         val throwException = UnknownHostException()
 
-        val exception = networkingErrorMapper.apply(throwException)
+        val exception = networkingErrorMapper.mapper(throwException)
 
         assertThat(exception)
             .isInstanceOf(NetworkingError.UnknownEndpoint::class.java)
@@ -66,7 +67,7 @@ class NetworkingErrorMapperTest {
     fun `should throw UnknownNetworkException when any other exception`() {
         val throwException = IOException()
 
-        val exception = networkingErrorMapper.apply(throwException)
+        val exception = networkingErrorMapper.mapper(throwException)
 
         assertThat(exception)
             .isInstanceOf(NetworkingError.UnknownNetworkException::class.java)
@@ -77,7 +78,7 @@ class NetworkingErrorMapperTest {
     fun `should report EssentialParamMissing when throwable is an EssentialParamMissing`() {
         val expected = NetworkingError.EssentialParamMissing("", 1)
 
-        networkingErrorMapper.apply(expected)
+        networkingErrorMapper.mapper(expected)
 
         assertThat(crashReportFake.reported).isEqualTo(expected)
     }
@@ -86,7 +87,7 @@ class NetworkingErrorMapperTest {
     fun `should report InvalidDataFormat when throwable is a SerializationException`() {
         val expected = SerializationException("field")
 
-        networkingErrorMapper.apply(expected)
+        networkingErrorMapper.mapper(expected)
 
         assertThat(crashReportFake.reported).isEqualTo(expected)
     }
@@ -95,7 +96,7 @@ class NetworkingErrorMapperTest {
     fun `should report UnknownEndpoint when throwable is an UnknownHostException`() {
         val expected = UnknownHostException()
 
-        networkingErrorMapper.apply(expected)
+        networkingErrorMapper.mapper(expected)
 
         assertThat(crashReportFake.reported).isEqualTo(expected)
     }
@@ -104,7 +105,7 @@ class NetworkingErrorMapperTest {
     fun `should report UnknownNetworkException when throwable is any other exception`() {
         val expected = IOException()
 
-        networkingErrorMapper.apply(expected)
+        networkingErrorMapper.mapper(expected)
 
         assertThat(crashReportFake.reported).isEqualTo(expected)
     }

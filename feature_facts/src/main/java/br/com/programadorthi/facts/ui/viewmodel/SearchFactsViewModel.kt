@@ -28,8 +28,10 @@ class SearchFactsViewModel(
         launch {
             when (val result =
                 factsUseCase.categories(limit = MAX_VISIBLE_CATEGORIES, shuffle = true)) {
-                is ResultTypes.Business -> mutableCategories.emit(UIState.Failed(result.exceptionOrNull()))
-                is ResultTypes.Error -> mutableCategories.emit(UIState.Failed(result.exceptionOrNull()))
+                is ResultTypes.Business ->
+                    mutableCategories.emit(UIState.Failed(result.exceptionOrNull()))
+                is ResultTypes.Error ->
+                    mutableCategories.emit(UIState.Failed(result.exceptionOrNull()))
                 else -> {
                     result
                         .getOrDefault(emptyList())
@@ -42,7 +44,8 @@ class SearchFactsViewModel(
     fun fetchLastSearches() {
         launch {
             when (val result = factsUseCase.lastSearches()) {
-                is ResultTypes.Error -> mutableCategories.emit(UIState.Failed(result.exceptionOrNull()))
+                is ResultTypes.Error ->
+                    mutableCategories.emit(UIState.Failed(result.exceptionOrNull()))
                 else -> {
                     result
                         .getOrDefault(emptyList())

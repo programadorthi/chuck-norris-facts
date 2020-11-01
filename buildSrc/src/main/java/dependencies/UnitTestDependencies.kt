@@ -8,7 +8,9 @@ class UnitTestDependencies {
     private val all by lazy {
         listOf(
             Libraries.JUNIT,
-            Libraries.ASSERTJ
+            Libraries.ASSERTJ,
+            Libraries.KOTLIN_COROUTINES_TEST,
+            Libraries.MOCKK
         )
     }
 

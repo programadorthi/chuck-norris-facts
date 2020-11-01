@@ -2,30 +2,32 @@ package br.com.programadorthi.network.manager
 
 import br.com.programadorthi.network.exception.NetworkingError
 import br.com.programadorthi.network.exception.NetworkingErrorMapper
+import br.com.programadorthi.network.exception.NetworkingErrorMapperImpl
 import br.com.programadorthi.network.fake.ConnectionCheckFake
 import br.com.programadorthi.network.fake.CrashReportFake
-import br.com.programadorthi.network.fake.DefaultRetryPolicyFake
 import br.com.programadorthi.network.fake.RemoteMapperFake
-import io.reactivex.Completable
-import io.reactivex.Single
-import kotlinx.serialization.SerializationException
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Test
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.just
+import io.mockk.mockk
 import java.io.IOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.serialization.SerializationException
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.Before
+import org.junit.Test
 
 class DefaultNetworkManagerTest {
 
+    private val testDispatcher = TestCoroutineDispatcher()
     private lateinit var connectionCheckFake: ConnectionCheckFake
-
     private lateinit var crashReportFake: CrashReportFake
-
-    private lateinit var defaultRetryPolicyFake: DefaultRetryPolicyFake
-
     private lateinit var networkingErrorMapper: NetworkingErrorMapper
-
     private lateinit var networkManager: NetworkManager
 
     @Before
@@ -34,245 +36,211 @@ class DefaultNetworkManagerTest {
 
         crashReportFake = CrashReportFake()
 
-        defaultRetryPolicyFake = DefaultRetryPolicyFake()
-
-        networkingErrorMapper = NetworkingErrorMapper(
+        networkingErrorMapper = NetworkingErrorMapperImpl(
             crashReport = crashReportFake
         )
 
         networkManager = DefaultNetworkManager(
             connectionCheck = connectionCheckFake,
             networkingErrorMapper = networkingErrorMapper,
-            retryPolicy = defaultRetryPolicyFake
+            ioDispatcher = testDispatcher
         )
     }
 
     @Test
-    fun `should all methods success when all works fine`() {
+    fun `should has NoInternetConnection error when there is no internet connection`() =
+        testDispatcher.runBlockingTest {
+            connectionCheckFake.hasConnection = false
 
-        defaultRetryPolicyFake.throwException = false
+            val func1 = mockk<suspend () -> Unit>(relaxed = true)
+            val func2 = mockk<suspend () -> String>(relaxed = true)
+            coEvery { func1() } just Runs
+            coEvery { func2() } returns "-1"
 
-        val completableResult = networkManager.performAndDone(Completable.complete()).test()
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndDone(func1)
+                }
+            }.isEqualTo(NetworkingError.NoInternetConnection)
+            assertThat(crashReportFake.reported).isEqualTo(null)
 
-        completableResult
-            .assertNoErrors()
-            .assertNoValues()
-            .assertComplete()
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndReturnsData(func2)
+                }
+            }.isEqualTo(NetworkingError.NoInternetConnection)
+            assertThat(crashReportFake.reported).isEqualTo(null)
 
-        val singleData = "1234"
-
-        val singleResult = networkManager.performAndReturnsData(Single.just(singleData)).test()
-
-        singleResult
-            .assertNoErrors()
-            .assertComplete()
-            .assertValue(singleData)
-
-        val singleMappedResult = networkManager.performAndReturnsMappedData(
-            RemoteMapperFake(), Single.just(singleData)
-        ).test()
-
-        singleMappedResult
-            .assertNoErrors()
-            .assertComplete()
-            .assertValue(Integer.MAX_VALUE)
-    }
-
-    @Test
-    fun `should has NoInternetConnection error when there is no internet connection`() {
-        connectionCheckFake.hasConnection = false
-
-        val completableResult = networkManager.performAndDone(Completable.never()).test()
-
-        completableResult.awaitTerminalEvent()
-
-        completableResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError(NetworkingError.NoInternetConnection)
-            .assertOf { assertThat(crashReportFake.reported).isEqualTo(null) }
-
-        val singleResult = networkManager.performAndReturnsData(Single.never<Nothing>()).test()
-
-        singleResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError(NetworkingError.NoInternetConnection)
-            .assertOf { assertThat(crashReportFake.reported).isEqualTo(null) }
-
-        val singleMappedResult = networkManager.performAndReturnsMappedData(
-            RemoteMapperFake(), Single.never<String>()
-        ).test()
-
-        singleMappedResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError(NetworkingError.NoInternetConnection)
-            .assertOf { assertThat(crashReportFake.reported).isEqualTo(null) }
-    }
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndReturnsMappedData(RemoteMapperFake(), func2)
+                }
+            }.isEqualTo(NetworkingError.NoInternetConnection)
+            assertThat(crashReportFake.reported).isEqualTo(null)
+        }
 
     @Test
-    fun `should has EssentialParamMissing error when is missing required fields in the server response data`() {
-        val singleMappedResult = networkManager.performAndReturnsMappedData(
-            RemoteMapperFake(throwException = true), Single.just("")
-        ).test()
+    fun `should has EssentialParamMissing error when is missing required fields in the server response data`() =
+        testDispatcher.runBlockingTest {
 
-        defaultRetryPolicyFake.publisher.onNext(NetworkingError.NoInternetConnection)
+            val func2 = mockk<suspend () -> String>(relaxed = true)
+            coEvery { func2() } returns "-1"
 
-        singleMappedResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError { it is NetworkingError.EssentialParamMissing }
-            .assertOf { assertThat(crashReportFake.reported).isNotNull() }
-    }
-
-    @Test
-    fun `should has InvalidDataFormat error when the server response json data has invalid format`() {
-        val completableError = SerializationException("field")
-
-        val completableResult = networkManager.performAndDone(
-            Completable.error(completableError)
-        ).test()
-
-        completableResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError { it is NetworkingError.InvalidDataFormat }
-            .assertOf { assertThat(crashReportFake.reported).isEqualTo(completableError) }
-
-        val singleError = SerializationException("0")
-
-        val singleResult = networkManager.performAndReturnsData(
-            Single.error<Nothing>(singleError)
-        ).test()
-
-        singleResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError { it is NetworkingError.InvalidDataFormat }
-            .assertOf { assertThat(crashReportFake.reported).isEqualTo(singleError) }
-
-        val singleMappedError = SerializationException("class")
-
-        val singleMappedResult = networkManager.performAndReturnsMappedData(
-            RemoteMapperFake(), Single.error(singleMappedError)
-        ).test()
-
-        singleMappedResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError { it is NetworkingError.InvalidDataFormat }
-            .assertOf { assertThat(crashReportFake.reported).isEqualTo(singleMappedError) }
-    }
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndReturnsMappedData(
+                        RemoteMapperFake(throwException = true), func2
+                    )
+                }
+            }.isInstanceOf(NetworkingError.EssentialParamMissing::class.java)
+            assertThat(crashReportFake.reported).isNotNull()
+        }
 
     @Test
-    fun `should has ConnectionTimeout error when there is a slow internet connection`() {
-        val completableResult = networkManager.performAndDone(
-            Completable.error(SocketTimeoutException())
-        ).test()
+    fun `should has InvalidDataFormat error when the server response json data has invalid format`() =
+        testDispatcher.runBlockingTest {
+            val completableError = SerializationException("field")
 
-        completableResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError { it is NetworkingError.ConnectionTimeout }
-            .assertOf { assertThat(crashReportFake.reported).isNull() }
+            val func1 = mockk<suspend () -> Unit>(relaxed = true)
+            coEvery { func1() } throws completableError
 
-        val singleResult = networkManager.performAndReturnsData(
-            Single.error<Nothing>(SocketTimeoutException())
-        ).test()
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndDone(func1)
+                }
+            }.isInstanceOf(NetworkingError.InvalidDataFormat::class.java)
+            assertThat(crashReportFake.reported).isEqualTo(completableError)
 
-        singleResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError { it is NetworkingError.ConnectionTimeout }
-            .assertOf { assertThat(crashReportFake.reported).isNull() }
+            val singleError = SerializationException("0")
 
-        val singleMappedResult = networkManager.performAndReturnsMappedData(
-            RemoteMapperFake(), Single.error<String>(SocketTimeoutException())
-        ).test()
+            val func2 = mockk<suspend () -> String>(relaxed = true)
+            coEvery { func2() } throws singleError
 
-        singleMappedResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError { it is NetworkingError.ConnectionTimeout }
-            .assertOf { assertThat(crashReportFake.reported).isNull() }
-    }
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndReturnsData(func2)
+                }
+            }.isInstanceOf(NetworkingError.InvalidDataFormat::class.java)
+            assertThat(crashReportFake.reported).isEqualTo(singleError)
 
-    @Test
-    fun `should has UnknownEndpoint error when the endpoint is unreachable`() {
-        val completableError = UnknownHostException("one")
+            val singleMappedError = SerializationException("class")
 
-        val completableResult = networkManager.performAndDone(
-            Completable.error(completableError)
-        ).test()
+            coEvery { func2() } throws singleMappedError
 
-        completableResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError { it is NetworkingError.UnknownEndpoint }
-            .assertOf { assertThat(crashReportFake.reported).isEqualTo(completableError) }
-
-        val singleError = UnknownHostException("two")
-
-        val singleResult = networkManager.performAndReturnsData(
-            Single.error<Nothing>(singleError)
-        ).test()
-
-        singleResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError { it is NetworkingError.UnknownEndpoint }
-            .assertOf { assertThat(crashReportFake.reported).isEqualTo(singleError) }
-
-        val singleMappedError = UnknownHostException("three")
-
-        val singleMappedResult = networkManager.performAndReturnsMappedData(
-            RemoteMapperFake(), Single.error<String>(singleMappedError)
-        ).test()
-
-        singleMappedResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError { it is NetworkingError.UnknownEndpoint }
-            .assertOf { assertThat(crashReportFake.reported).isEqualTo(singleMappedError) }
-    }
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndReturnsMappedData(RemoteMapperFake(), func2)
+                }
+            }.isInstanceOf(NetworkingError.InvalidDataFormat::class.java)
+            assertThat(crashReportFake.reported).isEqualTo(singleMappedError)
+        }
 
     @Test
-    fun `should has UnknownNetworkException error when throw a generic error`() {
-        val completableError = IOException("one")
+    fun `should has ConnectionTimeout error when there is a slow internet connection`() =
+        testDispatcher.runBlockingTest {
 
-        val completableResult = networkManager.performAndDone(
-            Completable.error(completableError)
-        ).test()
+            val func1 = mockk<suspend () -> Unit>(relaxed = true)
+            val func2 = mockk<suspend () -> String>(relaxed = true)
+            coEvery { func1() } throws SocketTimeoutException()
+            coEvery { func2() } throws SocketTimeoutException()
 
-        completableResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError { it is NetworkingError.UnknownNetworkException }
-            .assertOf { assertThat(crashReportFake.reported).isEqualTo(completableError) }
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndDone(func1)
+                }
+            }.isInstanceOf(NetworkingError.ConnectionTimeout::class.java)
+            assertThat(crashReportFake.reported).isNull()
 
-        val singleError = IOException("two")
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndReturnsData(func2)
+                }
+            }.isInstanceOf(NetworkingError.ConnectionTimeout::class.java)
+            assertThat(crashReportFake.reported).isNull()
 
-        val singleResult = networkManager.performAndReturnsData(
-            Single.error<Nothing>(singleError)
-        ).test()
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndReturnsMappedData(RemoteMapperFake(), func2)
+                }
+            }.isInstanceOf(NetworkingError.ConnectionTimeout::class.java)
+            assertThat(crashReportFake.reported).isNull()
+        }
 
-        singleResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError { it is NetworkingError.UnknownNetworkException }
-            .assertOf { assertThat(crashReportFake.reported).isEqualTo(singleError) }
+    @Test
+    fun `should has UnknownEndpoint error when the endpoint is unreachable`() =
+        testDispatcher.runBlockingTest {
+            val completableError = UnknownHostException("one")
 
-        val singleMappedError = IOException("three")
+            val func1 = mockk<suspend () -> Unit>(relaxed = true)
+            coEvery { func1() } throws completableError
 
-        val singleMappedResult = networkManager.performAndReturnsMappedData(
-            RemoteMapperFake(), Single.error<String>(singleMappedError)
-        ).test()
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndDone(func1)
+                }
+            }.isInstanceOf(NetworkingError.UnknownEndpoint::class.java)
+            assertThat(crashReportFake.reported).isEqualTo(completableError)
 
-        singleMappedResult
-            .assertNotComplete()
-            .assertNoValues()
-            .assertError { it is NetworkingError.UnknownNetworkException }
-            .assertOf { assertThat(crashReportFake.reported).isEqualTo(singleMappedError) }
-    }
+            val singleError = UnknownHostException("two")
+
+            val func2 = mockk<suspend () -> String>(relaxed = true)
+            coEvery { func2() } throws singleError
+
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndReturnsData(func2)
+                }
+            }.isInstanceOf(NetworkingError.UnknownEndpoint::class.java)
+            assertThat(crashReportFake.reported).isEqualTo(singleError)
+
+            val singleMappedError = UnknownHostException("three")
+
+            coEvery { func2() } throws singleMappedError
+
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndReturnsMappedData(RemoteMapperFake(), func2)
+                }
+            }.isInstanceOf(NetworkingError.UnknownEndpoint::class.java)
+            assertThat(crashReportFake.reported).isEqualTo(singleMappedError)
+        }
+
+    @Test
+    fun `should has UnknownNetworkException error when throw a generic error`() =
+        testDispatcher.runBlockingTest {
+            val completableError = IOException("one")
+
+            val func1 = mockk<suspend () -> Unit>(relaxed = true)
+            coEvery { func1() } throws completableError
+
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndDone(func1)
+                }
+            }.isInstanceOf(NetworkingError.UnknownNetworkException::class.java)
+            assertThat(crashReportFake.reported).isEqualTo(completableError)
+
+            val singleError = IOException("two")
+
+            val func2 = mockk<suspend () -> String>(relaxed = true)
+            coEvery { func2() } throws singleError
+
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndReturnsData(func2)
+                }
+            }.isInstanceOf(NetworkingError.UnknownNetworkException::class.java)
+            assertThat(crashReportFake.reported).isEqualTo(singleError)
+
+            val singleMappedError = IOException("three")
+
+            coEvery { func2() } throws singleMappedError
+
+            assertThatThrownBy {
+                runBlocking {
+                    networkManager.performAndReturnsMappedData(RemoteMapperFake(), func2)
+                }
+            }.isInstanceOf(NetworkingError.UnknownNetworkException::class.java)
+            assertThat(crashReportFake.reported).isEqualTo(singleMappedError)
+        }
 }

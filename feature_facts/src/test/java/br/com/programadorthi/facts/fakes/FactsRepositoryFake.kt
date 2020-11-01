@@ -1,28 +1,26 @@
 package br.com.programadorthi.facts.fakes
 
+import br.com.programadorthi.domain.Result
+import br.com.programadorthi.domain.ResultTypes
 import br.com.programadorthi.facts.domain.Fact
 import br.com.programadorthi.facts.domain.FactsRepository
-import io.reactivex.Single
 
 class FactsRepositoryFake(
     var categories: List<String> = emptyList(),
     var lastSearches: List<String> = emptyList(),
     var termsAndResults: Map<String, List<Fact>> = emptyMap()
 ) : FactsRepository {
-
-    override fun fetchCategories(limit: Int, shuffle: Boolean): Single<List<String>> {
+    override suspend fun fetchCategories(limit: Int, shuffle: Boolean): Result<List<String>> {
         val result = if (limit > categories.size) {
             categories
         } else {
             categories.slice(IntRange(start = 0, endInclusive = limit - 1))
         }
-
-        return Single.just(result)
+        return ResultTypes.Success(result)
     }
 
-    override fun doSearch(text: String): Single<List<Fact>> =
-        Single.just(termsAndResults[text] ?: emptyList())
+    override suspend fun getLastSearches(): Result<List<String>> = ResultTypes.Success(lastSearches)
 
-    override fun getLastSearches(): Single<List<String>> =
-        Single.just(lastSearches)
+    override suspend fun doSearch(text: String): Result<List<Fact>> =
+        ResultTypes.Success(termsAndResults[text] ?: emptyList())
 }

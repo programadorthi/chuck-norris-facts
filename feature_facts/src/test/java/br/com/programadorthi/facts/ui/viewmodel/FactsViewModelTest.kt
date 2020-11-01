@@ -1,54 +1,52 @@
 package br.com.programadorthi.facts.ui.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import br.com.programadorthi.domain.Result
-import br.com.programadorthi.facts.Fact
-import br.com.programadorthi.facts.ui.facts.FactsViewModel
-import br.com.programadorthi.facts.fake.FactsUseCaseFake
+import br.com.programadorthi.facts.domain.Fact
+import br.com.programadorthi.facts.fakes.FactsUseCaseFake
+import br.com.programadorthi.facts.ui.UIState
 import br.com.programadorthi.facts.ui.model.FactViewData
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
 class FactsViewModelTest {
 
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
-
+    private val testScope = TestCoroutineScope()
     private lateinit var factsUseCase: FactsUseCaseFake
 
-    private lateinit var factsViewModel: br.com.programadorthi.facts.ui.facts.FactsViewModel
+    private lateinit var factsViewModel: FactsViewModel
 
     @Before
     fun `before each test`() {
         factsUseCase = FactsUseCaseFake()
+        factsViewModel = FactsViewModel(factsUseCase, testScope)
+    }
 
-        factsViewModel = br.com.programadorthi.facts.ui.facts.FactsViewModel(
-            Schedulers.trampoline(),
-            factsUseCase
-        )
+    @After
+    fun `after each test`() {
+        testScope.cleanupTestCoroutines()
     }
 
     @Test
-    fun `should have null facts when start app`() {
-        val expected = null
-
+    fun `should have null facts when start app`() = testScope.runBlockingTest {
+        val expected = UIState.Idle
         assertThat(factsViewModel.facts.value).isEqualTo(expected)
     }
 
     @Test
-    fun `should have empty facts when search have no results`() {
-        val expected = Result.Success(emptyList<br.com.programadorthi.facts.ui.model.FactViewData>())
-
+    fun `should have empty facts when search have no results`() = testScope.runBlockingTest {
+        val expected = UIState.Success(emptyList<FactViewData>())
         factsViewModel.search("")
-
         assertThat(factsViewModel.facts.value).isEqualTo(expected)
     }
 
     @Test
-    fun `should have facts when search have results`() {
+    fun `should have facts when search have results`() = testScope.runBlockingTest {
         val fact = Fact(
             id = "1",
             url = "url",
@@ -56,80 +54,71 @@ class FactsViewModelTest {
             categories = emptyList()
         )
 
-        val factViewData = br.com.programadorthi.facts.ui.model.FactViewData(
+        val factViewData = FactViewData(
             category = "",
             url = fact.url,
             value = fact.value
         )
 
-        val expected = Result.Success(listOf(factViewData))
-
+        val expected = UIState.Success(listOf(factViewData))
         factsUseCase.searchResult = listOf(fact)
-
         factsViewModel.search("")
-
         assertThat(factsViewModel.facts.value).isEqualTo(expected)
     }
 
     @Test
-    fun `should have error when search throw any exception`() {
+    fun `should have error when search throw any exception`() = testScope.runBlockingTest {
         val exception = Exception("some operation")
-
-        val expected = Result.Error(exception)
-
+        val expected = UIState.Failed(exception)
         factsUseCase.searchException = exception
-
         factsViewModel.search("")
-
         assertThat(factsViewModel.facts.value).isEqualTo(expected)
     }
 
     @Test
-    fun `should have a loading and error flow when search throw any exception`() {
-        val results = mutableListOf<Result<List<br.com.programadorthi.facts.ui.model.FactViewData>>>()
+    fun `should have a loading and error flow when search throw any exception`() =
+        testScope.runBlockingTest {
+            val exception = Exception("some operation")
+            val expected = listOf(UIState.Idle, UIState.Loading, UIState.Failed(exception))
+            factsUseCase.searchException = exception
 
-        val exception = Exception("some operation")
+            val results = mutableListOf<UIState<List<FactViewData>>>()
+            val job = launch {
+                factsViewModel.facts.toList(results)
+            }
+            factsViewModel.search("")
+            job.cancelAndJoin()
 
-        val expected = listOf(Result.Loading, Result.Error(exception))
-
-        factsUseCase.searchException = exception
-
-        factsViewModel.facts.observeForever {
-            results.add(it)
+            assertThat(results).isEqualTo(expected)
         }
-
-        factsViewModel.search("")
-
-        assertThat(results).isEqualTo(expected)
-    }
 
     @Test
-    fun `should have a loading and success flow when search have results`() {
-        val fact = Fact(
-            id = "1",
-            url = "url",
-            value = "value",
-            categories = emptyList()
-        )
+    fun `should have a loading and success flow when search have results`() =
+        testScope.runBlockingTest {
+            val fact = Fact(
+                id = "1",
+                url = "url",
+                value = "value",
+                categories = emptyList()
+            )
 
-        val factViewData = br.com.programadorthi.facts.ui.model.FactViewData(
-            category = "",
-            url = fact.url,
-            value = fact.value
-        )
+            val factViewData = FactViewData(
+                category = "",
+                url = fact.url,
+                value = fact.value
+            )
 
-        val results = mutableListOf<Result<List<br.com.programadorthi.facts.ui.model.FactViewData>>>()
+            factsUseCase.searchResult = listOf(fact)
 
-        val expected = listOf(Result.Loading, Result.Success(listOf(factViewData)))
+            val expected =
+                listOf(UIState.Idle, UIState.Loading, UIState.Success(listOf(factViewData)))
+            val results = mutableListOf<UIState<List<FactViewData>>>()
+            val job = launch {
+                factsViewModel.facts.toList(results)
+            }
+            factsViewModel.search("")
+            job.cancelAndJoin()
 
-        factsUseCase.searchResult = listOf(fact)
-
-        factsViewModel.facts.observeForever {
-            results.add(it)
+            assertThat(results).isEqualTo(expected)
         }
-
-        factsViewModel.search("")
-
-        assertThat(results).isEqualTo(expected)
-    }
 }

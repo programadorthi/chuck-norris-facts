@@ -39,6 +39,8 @@ object Libraries {
     // Unit test
     const val JUNIT = "junit:junit:${Versions.JUNIT}"
     const val ASSERTJ = "org.assertj:assertj-core:${Versions.ASSERTJ}"
+    const val KOTLIN_COROUTINES_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.KOTLIN_COROUTINES}"
+    const val MOCKK = "io.mockk:mockk:${Versions.MOCKK}"
     const val ROBOLECTRIC = "org.robolectric:robolectric:${Versions.ROBOLECTRIC}"
 
     // Instrumentation test
@@ -76,6 +78,7 @@ object Libraries {
 
         const val JUNIT = "4.12"
         const val ASSERTJ = "3.11.1"
+        const val MOCKK = "1.10.2"
         const val ROBOLECTRIC = "4.3.1"
 
         const val ANDROID_TEST_ARCH_CORE = "2.1.0"

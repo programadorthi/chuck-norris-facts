@@ -39,7 +39,7 @@ android {
         release {
             consumerProguardFiles configs.ProguardConfig.CONSUMER_RULES
             proguardFiles file("$rootDir/proguard").listFiles().toList().toArray()
-            proguardFiles getDefaultProguardFile(configs.ProguardConfig.ANDROID_OPTIMIZE_FILE), configs.ProguardConfig.PROGUARD_RULES
+            proguardFiles configs.ProguardConfig.PROGUARD_RULES
         }
 
     }

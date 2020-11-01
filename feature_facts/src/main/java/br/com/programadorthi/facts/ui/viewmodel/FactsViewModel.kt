@@ -25,7 +25,8 @@ class FactsViewModel(
         launch {
             mutableFacts.emit(UIState.Loading)
             when (val result = factsUseCase.search(text)) {
-                is ResultTypes.Business -> mutableFacts.emit(UIState.Failed(result.exceptionOrNull()))
+                is ResultTypes.Business ->
+                    mutableFacts.emit(UIState.Failed(result.exceptionOrNull()))
                 is ResultTypes.Error -> mutableFacts.emit(UIState.Failed(result.exceptionOrNull()))
                 else -> {
                     result

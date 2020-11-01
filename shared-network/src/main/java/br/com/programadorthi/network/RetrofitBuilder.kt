@@ -19,7 +19,7 @@ object RetrofitBuilder {
     operator fun invoke(
         endpoint: String,
         httpClient: OkHttpClient,
-        convertFactory: Converter.Factory = jsonFactory,
+        convertFactory: Converter.Factory = jsonFactory
     ): Retrofit = with(Retrofit.Builder()) {
         baseUrl(endpoint)
         client(httpClient)

@@ -90,7 +90,7 @@ class FactsActivity : AppCompatActivity(), DIAware {
     private fun handleSearchError(cause: Throwable) {
         val messageId = when (cause) {
             // FIXME: handle business
-            //is FactsBusiness.EmptySearch -> R.string.activity_facts_empty_search_term
+            // is FactsBusiness.EmptySearch -> R.string.activity_facts_empty_search_term
             is NetworkingError.NoInternetConnection ->
                 R.string.activity_facts_no_internet_connection
             else -> R.string.activity_facts_something_wrong

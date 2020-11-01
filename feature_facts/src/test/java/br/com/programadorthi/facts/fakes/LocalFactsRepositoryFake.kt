@@ -1,21 +1,18 @@
 package br.com.programadorthi.facts.fakes
 
-import br.com.programadorthi.facts.local.LocalFactsRepository
-import io.reactivex.Single
+import br.com.programadorthi.facts.data.local.LocalFactsRepository
 
 class LocalFactsRepositoryFake(
     var categories: List<String> = emptyList(),
     var lastSearches: List<String> = emptyList()
 ) : LocalFactsRepository {
-    override fun getCategories(): Single<List<String>> = Single.just(categories)
-
-    override fun getLastSearches(): Single<List<String>> = Single.just(lastSearches)
-
-    override fun saveCategories(categories: List<String>) {
+    override suspend fun getCategories(): List<String> = categories
+    override suspend fun getLastSearches(): List<String> = lastSearches
+    override suspend fun saveCategories(categories: List<String>) {
         this.categories = categories
     }
 
-    override fun saveNewSearch(text: String) {
-        lastSearches = lastSearches.toMutableList() + text
+    override suspend fun saveNewSearch(text: String) {
+        this.lastSearches = lastSearches.toMutableList() + text
     }
 }
