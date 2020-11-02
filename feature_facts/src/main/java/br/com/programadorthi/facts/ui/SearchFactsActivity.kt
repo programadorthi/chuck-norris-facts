@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import br.com.programadorthi.chucknorrisfacts.UIState
 import br.com.programadorthi.chucknorrisfacts.ext.viewModel
 import br.com.programadorthi.facts.R
 import br.com.programadorthi.facts.databinding.ActivitySearchFactsBinding

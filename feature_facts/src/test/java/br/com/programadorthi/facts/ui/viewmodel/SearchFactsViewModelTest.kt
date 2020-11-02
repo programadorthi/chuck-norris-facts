@@ -1,7 +1,7 @@
 package br.com.programadorthi.facts.ui.viewmodel
 
 import br.com.programadorthi.facts.fakes.FactsUseCaseFake
-import br.com.programadorthi.facts.ui.UIState
+import br.com.programadorthi.chucknorrisfacts.UIState
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions.assertThat

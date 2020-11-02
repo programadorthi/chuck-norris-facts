@@ -5,7 +5,7 @@ import br.com.programadorthi.domain.ResultTypes
 import br.com.programadorthi.domain.exceptionOrNull
 import br.com.programadorthi.domain.getOrDefault
 import br.com.programadorthi.facts.domain.FactsUseCase
-import br.com.programadorthi.facts.ui.UIState
+import br.com.programadorthi.chucknorrisfacts.UIState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

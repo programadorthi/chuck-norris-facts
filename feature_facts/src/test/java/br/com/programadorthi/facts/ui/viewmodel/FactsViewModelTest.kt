@@ -2,7 +2,7 @@ package br.com.programadorthi.facts.ui.viewmodel
 
 import br.com.programadorthi.facts.domain.Fact
 import br.com.programadorthi.facts.fakes.FactsUseCaseFake
-import br.com.programadorthi.facts.ui.UIState
+import br.com.programadorthi.chucknorrisfacts.UIState
 import br.com.programadorthi.facts.ui.model.FactViewData
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.toList

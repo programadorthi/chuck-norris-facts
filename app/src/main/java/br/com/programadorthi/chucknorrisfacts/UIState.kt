@@ -1,4 +1,4 @@
-package br.com.programadorthi.facts.ui
+package br.com.programadorthi.chucknorrisfacts
 
 sealed class UIState<out T> {
     object Idle : UIState<Nothing>()
