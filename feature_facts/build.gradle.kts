@@ -1,4 +1,5 @@
 import dependencies.Libraries
+import dependencies.InstrumentationTestsDependencies.Companion.instrumentationTest
 import dependencies.UnitTestDependencies.Companion.unitTest
 import modules.LibraryModule
 import modules.LibraryType
@@ -51,5 +52,13 @@ dependencies {
         testImplementation(Libraries.ANDROID_TEST_ARCH_CORE)
         testImplementation(Libraries.ANDROID_TEST_CORE)
         testImplementation(Libraries.ROBOLECTRIC)
+    }
+
+    instrumentationTest {
+        forEachDependency { androidTestImplementation(it) }
+
+        forEachProjectDependency(this@dependencies) {
+            androidTestImplementation(it)
+        }
     }
 }

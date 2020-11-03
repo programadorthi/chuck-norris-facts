@@ -45,7 +45,7 @@ object Libraries {
 
     // Instrumentation test
     const val ANDROID_TEST_ARCH_CORE = "androidx.arch.core:core-testing:${Versions.ANDROID_TEST_ARCH_CORE}"
-    const val ANDROID_TEST_CORE = "androidx.test:core:${Versions.ANDROID_TEST}"
+    const val ANDROID_TEST_CORE = "androidx.test:core-ktx:${Versions.ANDROID_TEST}"
     const val ANDROID_TEST_JUNIT_KTX = "androidx.test.ext:junit-ktx:${Versions.ANDROID_TEST_JUNIT_KTX}"
     const val ANDROID_TEST_RUNNER = "androidx.test:runner:${Versions.ANDROID_TEST}"
     const val ANDROID_TEST_RULES = "androidx.test:rules:${Versions.ANDROID_TEST}"
@@ -79,11 +79,11 @@ object Libraries {
         const val JUNIT = "4.12"
         const val ASSERTJ = "3.11.1"
         const val MOCKK = "1.10.2"
-        const val ROBOLECTRIC = "4.3.1"
+        const val ROBOLECTRIC = "4.4"
 
         const val ANDROID_TEST_ARCH_CORE = "2.1.0"
         const val ANDROID_TEST_JUNIT_KTX = "1.1.1"
-        const val ANDROID_TEST = "1.2.0"
+        const val ANDROID_TEST = "1.3.0"
         const val ESPRESSO = "3.2.0"
     }
 }

@@ -1,4 +1,5 @@
 package br.com.programadorthi.facts.ui
+// TODO: Robolectric still not working with dynamic featue
 /*
 
 import android.app.Activity
