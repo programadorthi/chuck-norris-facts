@@ -14,6 +14,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import com.google.android.material.R as materialR
 
 class FactsViewModelTest {
 
@@ -25,7 +26,7 @@ class FactsViewModelTest {
     @Before
     fun `before each test`() {
         factsUseCase = FactsUseCaseFake()
-        stringProvider = StringProviderFake("")
+        stringProvider = StringProviderFake("123 default")
         factsViewModel = FactsViewModel(factsUseCase, stringProvider, testScope)
     }
 
@@ -57,9 +58,10 @@ class FactsViewModelTest {
         )
 
         val factViewData = FactViewData(
-            category = "",
+            category = stringProvider.textToReturn,
             url = fact.url,
-            value = fact.value
+            value = fact.value,
+            style = materialR.style.TextAppearance_MaterialComponents_Headline4
         )
 
         val expected = UIState.Success(listOf(factViewData))
@@ -106,14 +108,16 @@ class FactsViewModelTest {
             val fact = Fact(
                 id = "1",
                 url = "url",
-                value = "value",
+                value = "value maior que 80 value maior que 80 value maior que 80 value value " +
+                        "maior que 80 value maior que 80 value maior que 80 value",
                 categories = emptyList()
             )
 
             val factViewData = FactViewData(
-                category = "",
+                category = stringProvider.textToReturn,
                 url = fact.url,
-                value = fact.value
+                value = fact.value,
+                style = materialR.style.TextAppearance_MaterialComponents_Subtitle1
             )
 
             factsUseCase.searchResult = listOf(fact)

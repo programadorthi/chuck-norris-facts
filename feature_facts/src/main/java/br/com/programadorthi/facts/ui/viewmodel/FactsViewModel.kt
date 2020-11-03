@@ -1,8 +1,8 @@
 package br.com.programadorthi.facts.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import br.com.programadorthi.chucknorrisfacts.ui.UIState
 import br.com.programadorthi.chucknorrisfacts.ext.toStringRes
+import br.com.programadorthi.chucknorrisfacts.ui.UIState
 import br.com.programadorthi.domain.ResultTypes
 import br.com.programadorthi.domain.getOrDefault
 import br.com.programadorthi.domain.resource.StringProvider
@@ -13,7 +13,7 @@ import br.com.programadorthi.facts.domain.FactsUseCase
 import br.com.programadorthi.facts.ui.model.FactViewData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import br.com.programadorthi.chucknorrisfacts.R as mainR
 import com.google.android.material.R as materialR
@@ -25,8 +25,7 @@ class FactsViewModel(
 ) : ViewModel(), CoroutineScope by ioScope {
 
     private val mutableFacts = MutableStateFlow<UIState<List<FactViewData>>>(UIState.Idle)
-    val facts: StateFlow<UIState<List<FactViewData>>>
-        get() = mutableFacts
+    val facts = mutableFacts.asStateFlow()
 
     fun search(text: String) {
         launch {

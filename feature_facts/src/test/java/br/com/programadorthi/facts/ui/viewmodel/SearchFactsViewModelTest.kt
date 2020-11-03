@@ -20,7 +20,7 @@ class SearchFactsViewModelTest {
     @Before
     fun `before each test`() {
         factsUseCase = FactsUseCaseFake()
-        stringProvider = StringProviderFake("")
+        stringProvider = StringProviderFake("456 default")
         searchFactsViewModel = SearchFactsViewModel(factsUseCase, stringProvider, testScope)
     }
 

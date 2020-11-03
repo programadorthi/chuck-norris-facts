@@ -10,6 +10,7 @@ import br.com.programadorthi.facts.domain.FactsUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import br.com.programadorthi.chucknorrisfacts.R as mainR
 
@@ -20,12 +21,10 @@ class SearchFactsViewModel(
 ) : ViewModel(), CoroutineScope by ioScope {
 
     private val mutableCategories = MutableStateFlow<UIState<List<String>>>(UIState.Idle)
-    val categories: StateFlow<UIState<List<String>>>
-        get() = mutableCategories
+    val categories = mutableCategories.asStateFlow()
 
     private val mutableLastSearches = MutableStateFlow<UIState<List<String>>>(UIState.Idle)
-    val lastSearches: StateFlow<UIState<List<String>>>
-        get() = mutableLastSearches
+    val lastSearches = mutableLastSearches.asStateFlow()
 
     fun fetchCategories() {
         launch {
