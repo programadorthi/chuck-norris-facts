@@ -1,11 +1,10 @@
 package br.com.programadorthi.facts.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
+import br.com.programadorthi.chucknorrisfacts.UIState
 import br.com.programadorthi.domain.ResultTypes
-import br.com.programadorthi.domain.exceptionOrNull
 import br.com.programadorthi.domain.getOrDefault
 import br.com.programadorthi.facts.domain.FactsUseCase
-import br.com.programadorthi.chucknorrisfacts.UIState
 import br.com.programadorthi.facts.ui.model.FactViewData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,8 +25,8 @@ class FactsViewModel(
             mutableFacts.emit(UIState.Loading)
             when (val result = factsUseCase.search(text)) {
                 is ResultTypes.Business ->
-                    mutableFacts.emit(UIState.Failed(result.exceptionOrNull()))
-                is ResultTypes.Error -> mutableFacts.emit(UIState.Failed(result.exceptionOrNull()))
+                    mutableFacts.emit(UIState.Failed(result))
+                is ResultTypes.Error -> mutableFacts.emit(UIState.Error(result.cause))
                 else -> {
                     result
                         .getOrDefault(emptyList())

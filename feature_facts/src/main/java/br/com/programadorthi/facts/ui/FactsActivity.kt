@@ -7,18 +7,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
-import br.com.programadorthi.chucknorrisfacts.UIState
 import br.com.programadorthi.chucknorrisfacts.ext.viewModel
 import br.com.programadorthi.facts.R
 import br.com.programadorthi.facts.databinding.ActivityFactsBinding
 import br.com.programadorthi.facts.di.factsModule
-import br.com.programadorthi.facts.ui.adapter.FactsAdapter
+import br.com.programadorthi.facts.ui.component.ErrorComponent
+import br.com.programadorthi.facts.ui.component.LoadingComponent
+import br.com.programadorthi.facts.ui.component.SuccessComponent
 import br.com.programadorthi.facts.ui.model.FactViewData
 import br.com.programadorthi.facts.ui.viewmodel.FactsViewModel
-import br.com.programadorthi.network.exception.NetworkingError
-import kotlinx.coroutines.flow.collect
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 
@@ -30,8 +27,6 @@ class FactsActivity : AppCompatActivity(), DIAware {
     }
 
     private val factsViewModel: FactsViewModel by viewModel()
-    private val factsAdapter = FactsAdapter(::shareFact)
-
     private lateinit var viewBinding: ActivityFactsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,11 +34,15 @@ class FactsActivity : AppCompatActivity(), DIAware {
         viewBinding = ActivityFactsBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        lifecycleScope.launchWhenCreated {
-            factsViewModel.facts.collect(::handleFacts)
+        ErrorComponent(factsViewModel.facts, viewBinding.root)
+        LoadingComponent(factsViewModel.facts, viewBinding.factsProgressBar)
+        SuccessComponent(factsViewModel.facts, viewBinding.factsRecyclerView, ::shareFact) {
+            Toast.makeText(
+                this,
+                R.string.activity_facts_empty_search_result,
+                Toast.LENGTH_LONG
+            ).show()
         }
-
-        viewBinding.factsRecyclerView.adapter = factsAdapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -66,37 +65,6 @@ class FactsActivity : AppCompatActivity(), DIAware {
             val query = data?.getStringExtra(SEARCH_RESULT_EXTRA_KEY) ?: EMPTY_TEXT
             factsViewModel.search(query)
         }
-    }
-
-    private fun handleFacts(result: UIState<List<FactViewData>>) {
-        when (result) {
-            is UIState.Failed -> handleSearchError(result.cause!!)
-            is UIState.Success -> {
-                if (result.data.isEmpty()) {
-                    Toast.makeText(
-                        this,
-                        R.string.activity_facts_empty_search_result,
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
-                    factsAdapter.changeData(result.data)
-                }
-            }
-            else -> Unit
-        }
-
-        viewBinding.factsProgressBar.isVisible = result is UIState.Loading
-    }
-
-    private fun handleSearchError(cause: Throwable) {
-        val messageId = when (cause) {
-            // FIXME: handle business
-            // is FactsBusiness.EmptySearch -> R.string.activity_facts_empty_search_term
-            is NetworkingError.NoInternetConnection ->
-                R.string.activity_facts_no_internet_connection
-            else -> R.string.activity_facts_something_wrong
-        }
-        Toast.makeText(this, messageId, Toast.LENGTH_LONG).show()
     }
 
     private fun shareFact(factViewData: FactViewData) {
