@@ -1,4 +1,4 @@
-package br.com.programadorthi.chucknorrisfacts
+package br.com.programadorthi.chucknorrisfacts.ui
 
 import br.com.programadorthi.domain.ResultTypes
 

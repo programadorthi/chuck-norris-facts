@@ -1,7 +1,7 @@
 package br.com.programadorthi.facts.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import br.com.programadorthi.chucknorrisfacts.UIState
+import br.com.programadorthi.chucknorrisfacts.ui.UIState
 import br.com.programadorthi.chucknorrisfacts.ext.toStringRes
 import br.com.programadorthi.domain.ResultTypes
 import br.com.programadorthi.domain.getOrDefault

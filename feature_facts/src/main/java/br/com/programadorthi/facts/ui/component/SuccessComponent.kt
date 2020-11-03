@@ -3,7 +3,7 @@ package br.com.programadorthi.facts.ui.component
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import br.com.programadorthi.chucknorrisfacts.UIState
+import br.com.programadorthi.chucknorrisfacts.ui.UIState
 import br.com.programadorthi.facts.ui.adapter.FactsAdapter
 import br.com.programadorthi.facts.ui.model.FactViewData
 import kotlinx.coroutines.flow.StateFlow

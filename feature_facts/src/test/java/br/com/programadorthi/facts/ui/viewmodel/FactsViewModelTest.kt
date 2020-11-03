@@ -1,6 +1,6 @@
 package br.com.programadorthi.facts.ui.viewmodel
 
-import br.com.programadorthi.chucknorrisfacts.UIState
+import br.com.programadorthi.chucknorrisfacts.ui.UIState
 import br.com.programadorthi.facts.domain.Fact
 import br.com.programadorthi.facts.fakes.FactsUseCaseFake
 import br.com.programadorthi.facts.fakes.StringProviderFake
