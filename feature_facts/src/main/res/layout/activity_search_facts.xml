@@ -33,51 +33,57 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/searchFactsCategoriesTitleTextView"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/suggestionsContainer"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/activity_search_facts_categories_title"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:visibility="invisible"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchFactsTextInputLayout"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toBottomOf="@id/searchFactsTextInputLayout">
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/searchFactsCategoriesChipGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchFactsCategoriesTitleTextView" />
+            <TextView
+                android:id="@+id/searchFactsCategoriesTitleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/activity_search_facts_categories_title"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
-        <TextView
-            android:id="@+id/searchFactsLastSearchesTitleTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/activity_search_facts_last_searches_title"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchFactsCategoriesChipGroup"
-            tools:visibility="visible" />
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/searchFactsCategoriesChipGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/searchFactsLastSearchesChipGroup"
-            android:layout_width="match_parent"
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lastSearchesContainer"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchFactsLastSearchesTitleTextView" />
+            app:layout_constraintTop_toBottomOf="@id/suggestionsContainer">
+
+            <TextView
+                android:id="@+id/searchFactsLastSearchesTitleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/activity_search_facts_last_searches_title"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/searchFactsLastSearchesChipGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
