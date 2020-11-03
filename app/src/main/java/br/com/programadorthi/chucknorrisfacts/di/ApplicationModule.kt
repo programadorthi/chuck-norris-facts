@@ -6,9 +6,11 @@ import androidx.preference.PreferenceManager
 import br.com.programadorthi.chucknorrisfacts.factory.ViewModelFactory
 import br.com.programadorthi.chucknorrisfacts.preferences.PreferencesManagerImpl
 import br.com.programadorthi.chucknorrisfacts.report.CrashReportImpl
+import br.com.programadorthi.chucknorrisfacts.resource.DefaultStringProvider
 import br.com.programadorthi.domain.InjectionTags
 import br.com.programadorthi.domain.persist.PreferencesManager
 import br.com.programadorthi.domain.report.CrashReport
+import br.com.programadorthi.domain.resource.StringProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,4 +33,5 @@ val applicationModule = DI.Module("applicationModule") {
     bind<CoroutineScope>(InjectionTags.IO_SCOPE) with singleton {
         CoroutineScope(instance(InjectionTags.IO_DISPATCHER))
     }
+    bind<StringProvider>() with provider { DefaultStringProvider(instance()) }
 }

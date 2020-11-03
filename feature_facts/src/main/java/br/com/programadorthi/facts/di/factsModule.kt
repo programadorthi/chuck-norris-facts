@@ -54,6 +54,7 @@ val factsModule = DI.Module("factsModule") {
     bind<FactsViewModel>() with provider {
         FactsViewModel(
             factsUseCase = instance(),
+            stringProvider = instance(),
             ioScope = instance(InjectionTags.IO_SCOPE)
         )
     }
@@ -61,6 +62,7 @@ val factsModule = DI.Module("factsModule") {
     bind<SearchFactsViewModel>() with provider {
         SearchFactsViewModel(
             factsUseCase = instance(),
+            stringProvider = instance(),
             ioScope = instance(InjectionTags.IO_SCOPE)
         )
     }
