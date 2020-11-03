@@ -1,7 +1,8 @@
 package br.com.programadorthi.facts.ui.viewmodel
 
-import br.com.programadorthi.facts.fakes.FactsUseCaseFake
 import br.com.programadorthi.chucknorrisfacts.UIState
+import br.com.programadorthi.facts.fakes.FactsUseCaseFake
+import br.com.programadorthi.facts.fakes.StringProviderFake
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions.assertThat
@@ -13,12 +14,14 @@ class SearchFactsViewModelTest {
 
     private val testScope = TestCoroutineScope()
     private lateinit var factsUseCase: FactsUseCaseFake
+    private lateinit var stringProvider: StringProviderFake
     private lateinit var searchFactsViewModel: SearchFactsViewModel
 
     @Before
     fun `before each test`() {
         factsUseCase = FactsUseCaseFake()
-        searchFactsViewModel = SearchFactsViewModel(factsUseCase, testScope)
+        stringProvider = StringProviderFake("")
+        searchFactsViewModel = SearchFactsViewModel(factsUseCase, stringProvider, testScope)
     }
 
     @After
@@ -76,7 +79,8 @@ class SearchFactsViewModelTest {
     @Test
     fun `should have error when fetch categories`() = testScope.runBlockingTest {
         val exception = Exception("some operation")
-        val expected = UIState.Failed(exception)
+        stringProvider.textToReturn = "this is the message"
+        val expected = UIState.Error(exception, stringProvider.textToReturn)
         factsUseCase.categoriesException = exception
         searchFactsViewModel.fetchCategories()
         assertThat(searchFactsViewModel.categories.value).isEqualTo(expected)

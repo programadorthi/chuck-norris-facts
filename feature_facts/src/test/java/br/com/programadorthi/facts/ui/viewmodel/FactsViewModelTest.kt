@@ -1,8 +1,9 @@
 package br.com.programadorthi.facts.ui.viewmodel
 
+import br.com.programadorthi.chucknorrisfacts.UIState
 import br.com.programadorthi.facts.domain.Fact
 import br.com.programadorthi.facts.fakes.FactsUseCaseFake
-import br.com.programadorthi.chucknorrisfacts.UIState
+import br.com.programadorthi.facts.fakes.StringProviderFake
 import br.com.programadorthi.facts.ui.model.FactViewData
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.toList
@@ -18,13 +19,14 @@ class FactsViewModelTest {
 
     private val testScope = TestCoroutineScope()
     private lateinit var factsUseCase: FactsUseCaseFake
-
+    private lateinit var stringProvider: StringProviderFake
     private lateinit var factsViewModel: FactsViewModel
 
     @Before
     fun `before each test`() {
         factsUseCase = FactsUseCaseFake()
-        factsViewModel = FactsViewModel(factsUseCase, testScope)
+        stringProvider = StringProviderFake("")
+        factsViewModel = FactsViewModel(factsUseCase, stringProvider, testScope)
     }
 
     @After
@@ -69,7 +71,8 @@ class FactsViewModelTest {
     @Test
     fun `should have error when search throw any exception`() = testScope.runBlockingTest {
         val exception = Exception("some operation")
-        val expected = UIState.Failed(exception)
+        stringProvider.textToReturn = "this is the message"
+        val expected = UIState.Error(exception, stringProvider.textToReturn)
         factsUseCase.searchException = exception
         factsViewModel.search("")
         assertThat(factsViewModel.facts.value).isEqualTo(expected)
@@ -79,7 +82,12 @@ class FactsViewModelTest {
     fun `should have a loading and error flow when search throw any exception`() =
         testScope.runBlockingTest {
             val exception = Exception("some operation")
-            val expected = listOf(UIState.Idle, UIState.Loading, UIState.Failed(exception))
+            stringProvider.textToReturn = "this is the message"
+            val expected = listOf(
+                UIState.Idle,
+                UIState.Loading,
+                UIState.Error(exception, stringProvider.textToReturn)
+            )
             factsUseCase.searchException = exception
 
             val results = mutableListOf<UIState<List<FactViewData>>>()
