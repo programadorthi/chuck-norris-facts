@@ -6,8 +6,8 @@ import br.com.programadorthi.chucknorrisfacts.ext.toStringRes
 import br.com.programadorthi.domain.ResultTypes
 import br.com.programadorthi.domain.getOrDefault
 import br.com.programadorthi.domain.resource.StringProvider
-import br.com.programadorthi.chucknorrisfacts.R as mainR
 import br.com.programadorthi.facts.R
+import br.com.programadorthi.facts.domain.Fact
 import br.com.programadorthi.facts.domain.FactsBusiness
 import br.com.programadorthi.facts.domain.FactsUseCase
 import br.com.programadorthi.facts.ui.model.FactViewData
@@ -15,6 +15,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import br.com.programadorthi.chucknorrisfacts.R as mainR
+import com.google.android.material.R as materialR
 
 class FactsViewModel(
     private val factsUseCase: FactsUseCase,
@@ -46,22 +48,32 @@ class FactsViewModel(
                 else -> {
                     result
                         .getOrDefault(emptyList())
-                        .map { fact ->
-                            FactViewData(
-                                category = fact.categories.firstOrNull() ?: "",
-                                url = fact.url,
-                                value = fact.value
-                            )
-                        }
+                        .map(::mapFact)
                         .let { facts -> mutableFacts.emit(UIState.Success(facts)) }
                 }
             }
         }
     }
 
+    private fun mapFact(fact: Fact) = FactViewData(
+        category = fact.categories.firstOrNull()
+            ?: stringProvider.getString(R.string.item_fact_view_holder_uncategorized_label),
+        url = fact.url,
+        value = fact.value,
+        style = if (fact.value.length > HIGH_FONT_CHARACTERS_LIMIT) {
+            materialR.style.TextAppearance_MaterialComponents_Subtitle1
+        } else {
+            materialR.style.TextAppearance_MaterialComponents_Headline4
+        }
+    )
+
     private fun ResultTypes.Business.toStringRes(): Int =
         when (this) {
             is FactsBusiness.EmptySearch -> R.string.activity_facts_empty_search_term
             else -> mainR.string.something_wrong
         }
+
+    private companion object {
+        private const val HIGH_FONT_CHARACTERS_LIMIT = 80
+    }
 }
